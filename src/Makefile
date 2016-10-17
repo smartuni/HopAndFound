@@ -5,7 +5,7 @@ APPLICATION = HopAndFound
 BOARD ?=  	pba-d-01-kw2x
 
 # This has to be the absolute path to the RIOT base directory:
-RIOTBASE ?= $(CURDIR)/RIOT
+RIOTBASE ?= $(CURDIR)/..//RIOT
 
 # Uncomment this to enable scheduler statistics for ps:
 #CFLAGS += -DSCHEDSTATISTICS

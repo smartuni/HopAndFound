@@ -6,9 +6,9 @@
 #define UDP_MULTICAST_ADDRESS ("ff02::1")
 
 typedef struct packet{
-	char header,
-	int sequence_number,
-	int payload,
+	int header;
+	int sequence_number;
+	int payload;
 } TPacket;
 
 int udp_send(TPacket* p)
