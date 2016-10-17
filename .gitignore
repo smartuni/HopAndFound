@@ -1,1 +1,4 @@
 .vagrant
+
+src/Monitor/bin
+src/MonitoredItem/bin
