@@ -44,9 +44,9 @@ void *_udp_server(void *args)
             // TODO error handling
         }
         else {
-            switch(server_buffer.header){
-				// TODO function calling
-			}
+            printf("header: %d, sequence_number: %d, payload %d\n", 
+				server_buffer.header, server_buffer.sequence_number, server_buffer.payload);
+
         }
     }
 
@@ -64,7 +64,7 @@ int udp_send(TPacket* p)
     return conn_udp_sendto(payload, strlen(payload), &src, sizeof(src), &dst, sizeof(dst), AF_INET6, UDP_SRC_PORT, UDP_PORT);
 }
 
-int udp_server(void)
+int udp_server_start(void)
 {
     if ((server_running == false) &&
         thread_create(server_stack, sizeof(server_stack), THREAD_PRIORITY_MAIN - 1,

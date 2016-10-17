@@ -8,10 +8,10 @@
 typedef struct packet{
 	char header,
 	int sequence_number,
-	int payload
+	int payload,
 } TPacket;
 
 int udp_send(TPacket* p)
-int udp_server(void)
+int udp_server_start(void)
 
 #endif
