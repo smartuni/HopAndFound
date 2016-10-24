@@ -33,10 +33,11 @@ void print_packet(char* info_text, packet_t* p);
 
 /**
   Send the content of p to multicast address 
-  \param p Pointer to packet_t struct which content will be sent.
+  \param p Pointer to struct which content will be sent.
+  \param p_size Size of struct.
   \return The result of conn_udp_sendto().
 */
-int udp_send(packet_t* p);
+int udp_send(void* p, size_t p_size);
 
 /**
   Start a udp server on port UDP_RECV_PORT
