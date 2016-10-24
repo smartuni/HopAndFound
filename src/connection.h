@@ -3,7 +3,7 @@
 
 #include "net/gnrc/netapi.h"
 
-#define UDP_RECV_PORT ((uint16_t) 8888) 	//Outer port for udp communication
+#define UDP_RECV_PORT ((uint16_t) 9999) 	//Outer port for udp communication
 #define UDP_SRC_PORT ((uint16_t) 1234)		//Inner port fpr udp communication
 #define UDP_MULTICAST_ADDRESS ("ff02::1")	//IPv6 multicast address
 
