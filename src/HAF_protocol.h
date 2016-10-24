@@ -32,7 +32,7 @@ typedef struct call_for_help{
 	char type;
 	int seq_nr;
 	char mi_id;
-	char[MAX_NODES] node_list;
+	char node_list[MAX_NODES];
 }call_for_help_t;
 
 

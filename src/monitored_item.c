@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "thread.h"
 
@@ -9,19 +10,18 @@
 #define UDP_RECV_PORT	((uint16_t) 8888)
 #define MI_ID			(1)
 
-void dispatch(uint8_t[] recv_buffer) {
-	print_packet("Received Packet", &recv_buffer);
+void dispatch(uint8_t recv_buffer[]) {
 	switch(recv_buffer[0]) {
 		case HEARTBEAT: 
 			printf("HEARTBEAT received.");
-			heartbeat_t msg_strct;
-			memcpy(&msg_strct, recv_buffer, sizeof(msg_strct));
+			heartbeat_t msg_strct_1;
+			memcpy(&msg_strct_1, recv_buffer, sizeof(msg_strct_1));
 			//TODO call handler thread
 			break;
 		case LOCALIZATION_REPLY:				
 			printf("LOCALIZATION_REPLY received.");
-			localization_reply_t msg_strct;
-			memcpy(&msg_strct, recv_buffer, sizeof(msg_strct));
+			localization_reply_t msg_strct_2;
+			memcpy(&msg_strct_2, recv_buffer, sizeof(msg_strct_2));
 			//TODO call handler thread
 			break;
 		default:
