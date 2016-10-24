@@ -35,7 +35,7 @@ int main(void){
 	}
 	
 	p.header = 1;
-	p.payload = "42";
+	p.message = 42;
 	
 	sn = 0;
 	while(1)

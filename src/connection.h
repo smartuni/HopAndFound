@@ -21,7 +21,7 @@ typedef enum netif_mode {
 typedef struct packet{
 	int header;
 	int sequence_number;
-	char* payload;
+	int message;
 } packet_t;
 
 /**

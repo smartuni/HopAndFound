@@ -25,8 +25,8 @@ static kernel_pid_t netif_dev = -1;
 
 
 void print_packet(char* info_text, packet_t* p){
-	printf("%s (t=%u):: header=%d, sequence_number=%d, payload=%s\n", 
-				info_text, (uint) xtimer_now(), p->header, p->sequence_number, p->payload);
+	printf("%s (t=%u):: header=%d, sequence_number=%d, message=%d\n", 
+				info_text, (uint) xtimer_now(), p->header, p->sequence_number, p->message);
 }
 
 void* _udp_server(void *args){
