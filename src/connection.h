@@ -1,5 +1,5 @@
-#ifndef __CONNECTION__
-#define __CONNECTION__
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
 #include "net/gnrc/netapi.h"
 
