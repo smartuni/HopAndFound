@@ -15,11 +15,7 @@
 #define SERVER_BUFFER_SIZE      (sizeof(packet_t))
 
 
-
-static bool server_running = false;
-static conn_udp_t conn;
-static char server_stack[THREAD_STACKSIZE_DEFAULT];
-static msg_t server_msg_queue[SERVER_MSG_QUEUE_SIZE];
+static char stack[THREAD_STACKSIZE_DEFAULT];
 static kernel_pid_t netif_dev = -1;
 
 
@@ -31,16 +27,17 @@ void print_packet(char* info_text, packet_t* p){
 
 void* _udp_server(void *args){
     uint16_t port = UDP_RECV_PORT;
+    conn_udp_t conn;
     packet_t server_buffer;
+    msg_t server_msg_queue[SERVER_MSG_QUEUE_SIZE];
     ipv6_addr_t server_addr = IPV6_ADDR_UNSPECIFIED;
     msg_init_queue(server_msg_queue, SERVER_MSG_QUEUE_SIZE);
 
     if(conn_udp_create(&conn, &server_addr, sizeof(server_addr), AF_INET6, port) < 0) {
+		printf("Cannot create connection on port %d\n", port);
 		// TODO error handling
         return NULL;
     }
-
-    server_running = true;
 
     while (1) {
         int res;
@@ -48,11 +45,11 @@ void* _udp_server(void *args){
         size_t src_len = sizeof(ipv6_addr_t);
         if ((res = conn_udp_recvfrom(&conn, &server_buffer, sizeof(server_buffer),
                                      &src, &src_len, &port)) < 0) {
-            puts("Error while receiving");            
+            puts("Error while receiving\n");            
             // TODO error handling
         }
         else if (res == 0) {
-            puts("No data received");
+            puts("No data received\n");
             // TODO error handling
         }
         else {
@@ -76,8 +73,7 @@ int udp_send(packet_t* p){
 }
 
 int udp_server_start(void){
-    if ((server_running == false) &&
-        thread_create(server_stack, sizeof(server_stack), THREAD_PRIORITY_MAIN - 1,
+    if (thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1,
                       THREAD_CREATE_STACKTEST, _udp_server, NULL, "HopAndFound UDP Server")
         <= KERNEL_PID_UNDEF) {
         return -1;
