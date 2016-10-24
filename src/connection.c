@@ -18,7 +18,6 @@
 
 static bool server_running = false;
 static conn_udp_t conn;
-static packet_t server_buffer;
 static char server_stack[THREAD_STACKSIZE_DEFAULT];
 static msg_t server_msg_queue[SERVER_MSG_QUEUE_SIZE];
 static kernel_pid_t netif_dev = -1;
@@ -31,7 +30,8 @@ void print_packet(char* info_text, packet_t* p){
 }
 
 void* _udp_server(void *args){
-    uint16_t port = (uint16_t) atoi(args);
+    uint16_t port = UDP_RECV_PORT;
+    packet_t server_buffer;
     ipv6_addr_t server_addr = IPV6_ADDR_UNSPECIFIED;
     msg_init_queue(server_msg_queue, SERVER_MSG_QUEUE_SIZE);
 
@@ -70,7 +70,7 @@ int udp_send(packet_t* p){
         return -1;
     }
     
-    res = conn_udp_sendto(p->payload, strlen(p->payload), &src, sizeof(src), &dst, sizeof(dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
+    res = conn_udp_sendto(p, sizeof(*p), &src, sizeof(src), &dst, sizeof(dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
     
     return res;
 }
