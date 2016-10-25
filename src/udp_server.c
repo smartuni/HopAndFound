@@ -6,7 +6,6 @@
 
 #include "udp_server.h"
 
-#define UDP_MULTICAST_ADDRESS	("ff02::1")	//IPv6 multicast address
 #define SERVER_MSG_QUEUE_SIZE   (8)
 #define MAX_RECV_BUFFER_SIZE	(12)
 
