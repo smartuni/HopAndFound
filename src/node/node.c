@@ -4,11 +4,8 @@
 
 #include "thread.h"
 
-#include "HAF_protocol.h"
-#include "udp_server.h"
-
-#define UDP_RECV_PORT	((uint16_t) 8888)
-#define NODE_ID			(1)
+#include "node.h"
+#include "../HAF_protocol.h"
 
 void dispatch(uint8_t recv_buffer[]) {
 	switch(recv_buffer[0]) {
@@ -28,9 +25,4 @@ void dispatch(uint8_t recv_buffer[]) {
 			printf("Irrelevant message received.");
 			break;
 	}
-}
-
-int main(void) {
-	udp_server(UDP_RECV_PORT, dispatch);
-	return 0;
 }
