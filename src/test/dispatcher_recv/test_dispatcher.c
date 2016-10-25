@@ -36,7 +36,7 @@ void dispatch(uint8_t recv_buffer[]) {
 			printf("seq_nr: %lu\n", msg_strct_4.seq_nr);
 			printf("mi_id: %u\n", msg_strct_4.mi_id);
 			for(int i = 0; i < MAX_NODES; i++) {
-				printf("node_list[%d]: %u\n", i, msg_strct_4.type);
+				printf("node_list[%d]: %u\n", i, msg_strct_4.node_list[i]);
 			}
 			break;
 		default:
