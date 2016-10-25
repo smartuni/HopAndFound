@@ -30,7 +30,6 @@ int send(uint8_t send_buffer[]) {
 }
 
 int main(void) {
-	puts("dispatcher_test");
 	uint8_t send_buffer[MAX_SEND_BUFFER_SIZE];
 	// declare packets
 	heartbeat_t heartbeat;
@@ -54,21 +53,25 @@ int main(void) {
 	//call_for_help.node_list = node_list;
 	
 	while(1) {
+		memset(send_buffer, 0, MAX_SEND_BUFFER_SIZE);
 		memcpy(send_buffer, &heartbeat, sizeof(heartbeat));
 		send(send_buffer);
 		puts("HEARTBEAT sent.");
 		xtimer_sleep(SLEEP_TIME);
 		
+		memset(send_buffer, 0, MAX_SEND_BUFFER_SIZE);
 		memcpy(send_buffer, &localization_request, sizeof(localization_request));
 		send(send_buffer);
 		puts("LOCALIZATION_REQUEST sent.");
 		xtimer_sleep(SLEEP_TIME);
 		
+		memset(send_buffer, 0, MAX_SEND_BUFFER_SIZE);
 		memcpy(send_buffer, &localization_reply, sizeof(localization_reply));
 		send(send_buffer);
 		puts("LOCALIZATION_REPLY sent.");
 		xtimer_sleep(SLEEP_TIME);
 		
+		memset(send_buffer, 0, MAX_SEND_BUFFER_SIZE);
 		memcpy(send_buffer, &call_for_help, sizeof(call_for_help));
 		send(send_buffer);
 		puts("CALL_FOR_HELP sent.");
