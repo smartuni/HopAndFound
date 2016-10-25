@@ -11,10 +11,14 @@
 #include "../HAF_protocol.h"
 
 #define UDP_MULTICAST_ADDRESS	("ff02::1")
+#define UDP_SRC_PORT ((uint16_t) 8888)
+#define UDP_RECV_PORT ((uint16_t) 8888)
 #define SERVER_MSG_QUEUE_SIZE   (8)
 #define MAX_SEND_BUFFER_SIZE	(12)
 
-void send(uint8_t send_buffer[]) {
+#define SLEEP_TIME				(2)
+
+int send(uint8_t send_buffer[]) {
 	int res;
 	ipv6_addr_t src = IPV6_ADDR_UNSPECIFIED, dst;
 	if(ipv6_addr_from_str(&dst, UDP_MULTICAST_ADDRESS) == NULL) {
@@ -26,6 +30,7 @@ void send(uint8_t send_buffer[]) {
 }
 
 int main(void) {
+	puts("dispatcher_test");
 	uint8_t send_buffer[MAX_SEND_BUFFER_SIZE];
 	// declare packets
 	heartbeat_t heartbeat;
@@ -33,7 +38,7 @@ int main(void) {
 	localization_reply_t localization_reply;
 	call_for_help_t call_for_help;
 	
-	uint8_t node_list[MAX_NODES];
+	//uint8_t node_list[MAX_NODES];
 	
 	// init packets
 	heartbeat.type = HEARTBEAT;
@@ -44,30 +49,30 @@ int main(void) {
 	localization_reply.node_id = 1;
 	
 	call_for_help.type = CALL_FOR_HELP;
-	call_for_help.seq_nr = 1
-	call_for_help.mi_id = 2
-	call_for_help.node_list = node_list;
+	call_for_help.seq_nr = 1;
+	call_for_help.mi_id = 2;
+	//call_for_help.node_list = node_list;
 	
 	while(1) {
 		memcpy(send_buffer, &heartbeat, sizeof(heartbeat));
 		send(send_buffer);
-		printf("HEARTBEAT sent.");
-		xtimer_sleep(1);
+		puts("HEARTBEAT sent.");
+		xtimer_sleep(SLEEP_TIME);
 		
 		memcpy(send_buffer, &localization_request, sizeof(localization_request));
 		send(send_buffer);
-		printf("LOCALIZATION_REQUEST sent.");
-		xtimer_sleep(1);
+		puts("LOCALIZATION_REQUEST sent.");
+		xtimer_sleep(SLEEP_TIME);
 		
 		memcpy(send_buffer, &localization_reply, sizeof(localization_reply));
 		send(send_buffer);
-		printf("LOCALIZATION_REPLY sent.");
-		xtimer_sleep(1);
+		puts("LOCALIZATION_REPLY sent.");
+		xtimer_sleep(SLEEP_TIME);
 		
 		memcpy(send_buffer, &call_for_help, sizeof(call_for_help));
 		send(send_buffer);
-		printf("CALL_FOR_HELP sent.");
-		xtimer_sleep(1);
+		puts("CALL_FOR_HELP sent.");
+		xtimer_sleep(SLEEP_TIME);
 	}
 	return 0;
 }

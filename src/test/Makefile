@@ -1,5 +1,5 @@
 # name of your application
-APPLICATION = node
+APPLICATION = dispatcher_test
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= pba-d-01-kw2x

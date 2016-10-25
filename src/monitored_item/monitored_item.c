@@ -13,19 +13,19 @@
 void dispatch(uint8_t recv_buffer[]) {
 	switch(recv_buffer[0]) {
 		case HEARTBEAT: 
-			printf("HEARTBEAT received.");
+			puts("HEARTBEAT received.");
 			heartbeat_t msg_strct_1;
 			memcpy(&msg_strct_1, recv_buffer, sizeof(msg_strct_1));
 			//TODO call handler thread
 			break;
 		case LOCALIZATION_REPLY:				
-			printf("LOCALIZATION_REPLY received.");
+			puts("LOCALIZATION_REPLY received.");
 			localization_reply_t msg_strct_2;
 			memcpy(&msg_strct_2, recv_buffer, sizeof(msg_strct_2));
 			//TODO call handler thread
 			break;
 		default:
-			printf("Irrelevant message received.");
+			puts("Irrelevant message received.");
 			break;
 	}
 }
