@@ -18,13 +18,16 @@
 
 #define SLEEP_TIME				(2)
 
-int send(uint8_t send_buffer[]) {
+int send(uint8_t send_buffer[], uint8_t size) {
 	int res;
+	uint8_t buffer[size];
+	printf("packetsize: %d\n", size);
 	ipv6_addr_t src = IPV6_ADDR_UNSPECIFIED, dst;
 	if(ipv6_addr_from_str(&dst, UDP_MULTICAST_ADDRESS) == NULL) {
 		return -1;
 	}
-	res = conn_udp_sendto(send_buffer, sizeof(*send_buffer), &src, sizeof(src), 
+	memcpy(buffer, send_buffer, sizeof(buffer));
+	res = conn_udp_sendto(buffer, sizeof(*buffer), &src, sizeof(src), 
 							&dst, sizeof(dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
 	return res;
 }
@@ -54,26 +57,26 @@ int main(void) {
 	
 	while(1) {
 		memset(send_buffer, 0, MAX_SEND_BUFFER_SIZE);
-		memcpy(send_buffer, &heartbeat, sizeof(heartbeat));
-		send(send_buffer);
+		memcpy(send_buffer, &heartbeat, sizeof(send_buffer));
+		send(send_buffer, sizeof(heartbeat));
 		puts("HEARTBEAT sent.");
 		xtimer_sleep(SLEEP_TIME);
 		
 		memset(send_buffer, 0, MAX_SEND_BUFFER_SIZE);
-		memcpy(send_buffer, &localization_request, sizeof(localization_request));
-		send(send_buffer);
+		memcpy(send_buffer, &localization_request, sizeof(send_buffer));
+		send(send_buffer, sizeof(localization_request));
 		puts("LOCALIZATION_REQUEST sent.");
 		xtimer_sleep(SLEEP_TIME);
 		
 		memset(send_buffer, 0, MAX_SEND_BUFFER_SIZE);
-		memcpy(send_buffer, &localization_reply, sizeof(localization_reply));
-		send(send_buffer);
+		memcpy(send_buffer, &localization_reply, sizeof(send_buffer));
+		send(send_buffer, sizeof(localization_reply));
 		puts("LOCALIZATION_REPLY sent.");
 		xtimer_sleep(SLEEP_TIME);
 		
 		memset(send_buffer, 0, MAX_SEND_BUFFER_SIZE);
-		memcpy(send_buffer, &call_for_help, sizeof(call_for_help));
-		send(send_buffer);
+		memcpy(send_buffer, &call_for_help, sizeof(send_buffer));
+		send(send_buffer, sizeof(call_for_help));
 		puts("CALL_FOR_HELP sent.");
 		xtimer_sleep(SLEEP_TIME);
 	}

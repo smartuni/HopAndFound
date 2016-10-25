@@ -25,7 +25,7 @@ typedef struct __attribute__((packed)) {
 	uint8_t node_id;
 } localization_reply_t;
 
-typedef struct call_for_help{
+typedef struct __attribute__((packed)) {
 	uint8_t type;
 	uint32_t seq_nr;
 	uint8_t mi_id;
