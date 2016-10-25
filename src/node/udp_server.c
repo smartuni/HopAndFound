@@ -25,7 +25,7 @@ void udp_server(uint16_t port, dispatcher_callback_t cb) {
         int res;
         ipv6_addr_t src;
         size_t src_len = sizeof(ipv6_addr_t);
-		memset(recv_buffer, 0, MAX_RECV_BUFFER_SIZE);
+		memset(recv_buffer, 0, sizeof(recv_buffer));
         if((res = conn_udp_recvfrom(&conn, &recv_buffer, sizeof(recv_buffer),
 									&src, &src_len, &port)) < 0) {
 			puts("Error while receiving\n");            
