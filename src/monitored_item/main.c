@@ -1,4 +1,4 @@
-#include "node.h"
+#include "monitored_item.h"
 #include "udp_server.h"
 
 int main(void) {
