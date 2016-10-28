@@ -6,7 +6,6 @@
 
 #include "monitored_item.h"
 #include "../HAF_protocol.h"
-#include "heartbeat_handler.h"
 
 void dispatch(uint8_t recv_buffer[]) {
 	switch(recv_buffer[0]) {
@@ -16,7 +15,7 @@ void dispatch(uint8_t recv_buffer[]) {
 			heartbeat_t msg_strct_1;
 			memcpy(&msg_strct_1, recv_buffer, sizeof(msg_strct_1));
 			printf("type: %u\n", msg_strct_1.type);
-			heartbeat_handler_start();
+			//TODO call handler thread
 			break;
 		case LOCALIZATION_REPLY:
 			puts("------------------------------");
