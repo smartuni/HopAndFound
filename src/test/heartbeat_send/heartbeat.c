@@ -5,6 +5,7 @@
 
 #include "heartbeat.h"
 #include "../../HAF_protocol.h"
+#include "main.h"
 
 #define HEARTBEAT_TIMEOUT_USEC	3000000
 #define HEARTBEAT_TIME_USEC		1000000
@@ -40,7 +41,7 @@ int handle_heartbeat(void) {
 }
 
 void _heartbeat_sender_Task(void) {
-	//TODO send heartbeat
+	send_heartbeat();
 	xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
 	puts("HEARTBEAT sent.");
 }
