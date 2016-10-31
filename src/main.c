@@ -41,7 +41,7 @@ int main(void){
 	while(1)
 	{
 		p.sequence_number = sn++;
-		udp_send(&p);
+		udp_send(&p, sizeof(p), NULL);
 		print_packet("Sent Packet", &p);
 		xtimer_sleep(1);
 	}

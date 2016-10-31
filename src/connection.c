@@ -2,9 +2,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "net/af.h"
-#include "net/conn/udp.h"
-#include "net/ipv6/addr.h"
 #include "thread.h"
 #include "connection.h"
 #include "xtimer.h"
@@ -63,16 +60,17 @@ void* _udp_server(void *args){
 int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 	int res;
     ipv6_addr_t src = IPV6_ADDR_UNSPECIFIED;
+    ipv6_addr_t d = IPV6_ADDR_UNSPECIFIED;
     
-    if (dst == NULL){
-		*dst = IPV6_ADDR_UNSPECIFIED;
+    if (dst != NULL){
+		d = *dst;
 	}
     
-    if (ipv6_addr_from_str(&dst, UDP_MULTICAST_ADDRESS) == NULL) {
+    if (ipv6_addr_from_str(dst, UDP_MULTICAST_ADDRESS) == NULL) {
         return -1;
     }
     
-    res = conn_udp_sendto(p, p_size, &src, sizeof(src), dst, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
+    res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
     
     return res;
 }
