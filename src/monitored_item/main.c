@@ -7,6 +7,9 @@
 #include "heartbeat.h"
 
 
+#include "call_for_help.h" 
+
+
 int main(void){
 	
 	xtimer_sleep(1);
