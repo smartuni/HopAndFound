@@ -1,3 +1,8 @@
+#include "global.h"
+#include "call_for_help.h"
+#include "console_map.h"
+#include "localization_reply.h"
+
 static int seq_nr_send = 1;
 static int seq_nr_recv = 0;
 
@@ -6,33 +11,32 @@ void send_call_for_help(void) {
 
 	pkg.type = CALL_FOR_HELP;
 
-	if ( seq_nr_send < 1000000 ) { //Abfrage im Empfang berÃcksichtigen
-		pkg.seq_nr = seq_nr_send;
-		seq_nr_send++;
-	} else {
+	if ( seq_nr_send >= 1000000 ) { //Abfrage im Empfang berücksichtigen
 		seq_nr_send = 0;
-		pkg.seq_nr = seq_nr_send;
-		seq_nr_send++;
 	}
+	
+	pkg.seq_nr = seq_nr_send;
+	seq_nr_send++;
+		
 	pkg.mi_id = MONITORED_ITEM_ID; //<-------------DEFINE ANLEGEN
-	pkg.node_list = get_node_list(); //<-----------getter fÃr nodelist
+	memcpy(&pkg.node_list, get_node_list(), MAX_NODES); //<-----------getter für nodelist
 	udp_send(&pkg, sizeof(pkg), NULL);	
 }
 
 
 void forward_call_for_help(call_for_help_t* p) {
-	udp_send(&p, sizeof(p), NULL);
+	if (p->seq_nr > seq_nr_recv){
+		udp_send(p, sizeof(p), NULL);
+		seq_nr_recv = p->seq_nr;
+	}
 }
 
 void handle_call_for_help(call_for_help_t* p, handler_t h) {
-	int i;
-	if ( handler_t == NODE ) {
-		forward_call_for_help(&p);
-	} else if ( handler_t == MONITOR ) {
-		if ( pkg.mi_id == MONITORED_ITEM_ID ) {
-			if (pkg.seq_nr > seq_nr_recv ) {
-				seq_nr_recv = pkg.seq_nr;
-			}
+	if ( h == NODE ) {
+		forward_call_for_help(p);
+	} else if ( h == MONITOR ) {
+		if ( p->mi_id == MONITORED_ITEM_ID ) {
+			printConsoleMap(p->node_list, MAX_NODES);
 		}
 	}
 }

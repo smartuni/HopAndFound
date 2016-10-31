@@ -17,7 +17,7 @@ static char* map_template = "\
 
 
 void generateAndPrintRandomMaps(void){
-	char nodes[6];
+	uint8_t nodes[6];
 	int i;
 	
 	xtimer_sleep(1);
@@ -35,7 +35,7 @@ void generateAndPrintRandomMaps(void){
 }
 
 
-void highlight_nodes_in_map(char* string, char* occurances, size_t len){
+void highlight_nodes_in_map(char* string, uint8_t* occurances, size_t len){
 	unsigned int i;
 	unsigned int occurance_count;
 	
@@ -57,7 +57,7 @@ void highlight_nodes_in_map(char* string, char* occurances, size_t len){
 	}
 }
 
-void printConsoleMap(char* nodes, size_t len){
+void printConsoleMap(uint8_t* nodes, size_t len){
 	char* map_to_print = (char*) malloc(strlen(map_template) + 1);
 	
 	strcpy(map_to_print, map_template);
