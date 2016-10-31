@@ -5,6 +5,8 @@
 
 #include "heartbeat.h"
 #include "HAF_protocol.h"
+#include "connection.h"
+#include "localization_request.h"
 
 #define HEARTBEAT_TIMEOUT_USEC	3000000
 #define HEARTBEAT_TIME_USEC		1000000
@@ -15,7 +17,8 @@ static char stack[THREAD_STACKSIZE_DEFAULT];
 
 void _heartbeat_handler_Task(void) {
 	puts("HEARTBEAT TIMEOUT!");
-	//TODO call heartbeat_timeout_handler
+	send_localization_request();
+	xtimer_set(&timer_recv, HEARTBEAT_TIMEOUT_USEC);
 }
 
 void* _heartbeat_handler(void *args) {
@@ -37,7 +40,9 @@ void handle_heartbeat(void) {
 }
 
 void _heartbeat_sender_Task(void) {
-	//TODO send heartbeat
+	heartbeat_t ret_pkg;
+	ret_pkg.type = HEARTBEAT;
+	udp_send(&ret_pkg, sizeof(ret_pkg), NULL);
 	xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
 	puts("HEARTBEAT sent.");
 }
