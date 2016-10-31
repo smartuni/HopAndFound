@@ -24,8 +24,6 @@ void* _localization_request_sender(void* args){
 }
 
 void* _localization_request_handler(void* args){
-	printf("_localization_request_handler send reply thread\n");
-	
 	ipv6_addr_t dst_cpy;
 	memcpy(&dst_cpy, (ipv6_addr_t*) args, sizeof(ipv6_addr_t));
 	send_localization_reply(&dst_cpy);
