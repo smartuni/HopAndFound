@@ -9,11 +9,6 @@
 
 static char stack[THREAD_STACKSIZE_DEFAULT];
 
-void handle_localization_request(ipv6_addr_t* dst){
-	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1, THREAD_CREATE_STACKTEST, 
-						_localization_request_handler, dst, "localization_request_handler");
-}
-
 void* _localization_request_handler(void* args){
 	ipv6_addr_t dst_cpy;
 	memcpy(&dst_cpy, (ipv6_addr_t*) args, sizeof(ipv6_addr_t));
@@ -23,7 +18,15 @@ void* _localization_request_handler(void* args){
 	xtimer_sleep(REQUEST_SLEEP_TIME);
 	
 	send_call_for_help();
+	
+	return NULL;
 }
+
+void handle_localization_request(ipv6_addr_t* dst){
+	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1, THREAD_CREATE_STACKTEST, 
+						_localization_request_handler, dst, "localization_request_handler");
+}
+
 
 void send_localization_request(void){
 	localization_request_t ret_pkg;
