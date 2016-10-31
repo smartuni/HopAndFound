@@ -66,7 +66,6 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
     
     res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
     
-    printf("sent package\n");
     return res;
 }
 

@@ -87,7 +87,7 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 				printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
 			}
 			
-			handle_call_for_help(&call_for_help, NODE);
+			//handle_call_for_help(&call_for_help, NODE);
 			
 			break;
 		default:
