@@ -60,12 +60,13 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 		d = *dst;
 	}
     
-    if (ipv6_addr_from_str(dst, UDP_MULTICAST_ADDRESS) == NULL) {
+    if (ipv6_addr_from_str(&d, UDP_MULTICAST_ADDRESS) == NULL) {
         return -1;
     }
     
     res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
     
+    printf("sent package\n");
     return res;
 }
 
