@@ -31,12 +31,9 @@ void heartbeat_handler_init(void) {
 	xtimer_set(&timer_recv, HEARTBEAT_TIMEOUT_USEC);
 }
 
-int handle_heartbeat(void) {
-	if (thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1, THREAD_CREATE_STACKTEST, 
-						_heartbeat_handler, NULL, "heartbeat_handler") <= KERNEL_PID_UNDEF) {
-		return -1;
-	}	
-	return 0;
+void handle_heartbeat(void) {
+	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1, THREAD_CREATE_STACKTEST, 
+						_heartbeat_handler, NULL, "heartbeat_handler");
 }
 
 void _heartbeat_sender_Task(void) {

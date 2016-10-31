@@ -2,7 +2,9 @@
 
 #define NODE_ID 1 //unique id to identify nodes
 
-void handle_localization_request(localization_request_t* p, ipv6_addr_t* dst){
+void handle_localization_request(ipv6_addr_t* dst){
+	ipv6_addr_t dst_cpy;
+	memcpy(&dst_cpy, dst, sizeof(*dst));
 	localization_reply_t ret_pkg;
 	ret_pkg.type = LOCALIZATION_REPLY;
 	ret_pkg.node_id = NODE_ID;

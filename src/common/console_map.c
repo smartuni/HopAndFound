@@ -32,8 +32,6 @@ void generateAndPrintRandomMaps(void){
 		printConsoleMap(nodes, sizeof(nodes));
 		xtimer_sleep(1);
 	}
-	
-	return 0;
 }
 
 
