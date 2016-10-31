@@ -19,5 +19,7 @@ int main(void){
 	
 	puts("Monitored Item Server up");
 	
+	heartbeat_handler_init();
+	
 	return 0;
 }
