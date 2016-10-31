@@ -6,7 +6,6 @@
 uint8_t node_list[MAX_NODES];
  
 void send_localization_reply(ipv6_addr_t* dst){
-	printf("send reply localization\n");
 	localization_reply_t ret_pkg;
 	ret_pkg.type = LOCALIZATION_REPLY;
 	ret_pkg.node_id = NODE_ID;
