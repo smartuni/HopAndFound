@@ -33,7 +33,7 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst);
   Start a udp server on port UDP_RECV_PORT
   \return -1 on error, 0 otherwise.
 */
-int udp_server_start(dispatcher_callback_t *cb);
+int udp_server_start(dispatcher_callback_t cb);
 
 /**
   Set the CHANNEL or POWER (enum netif_mode) to val.

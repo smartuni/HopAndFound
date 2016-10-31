@@ -3,14 +3,20 @@
 
 #include "connection.h"
 #include "xtimer.h"
+#include "dispatcher.h"
+#include "heartbeat.h"
 
 int main(void){
 	
 	xtimer_sleep(1);
-	set_netif(POWER, 11);
-	puts("Sent Packet \n");
+	set_netif(POWER, -21);
+	set_netif(CHANNEL, 11);
+	
+	puts("Monitored Item start \n");
 
-
-
+	udp_server_start((dispatcher_callback_t)dispatch_monitored_item);
+	
+	puts("Monitored Item Server up \n");
+	
 	return 0;
 }

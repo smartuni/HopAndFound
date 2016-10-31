@@ -69,7 +69,7 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
     return res;
 }
 
-int udp_server_start(dispatcher_callback_t *cb){
+int udp_server_start(dispatcher_callback_t cb){
     if (thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1,
                       THREAD_CREATE_STACKTEST, _udp_server, cb, "HopAndFound UDP Server")
         <= KERNEL_PID_UNDEF) {
