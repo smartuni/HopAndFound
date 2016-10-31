@@ -5,6 +5,7 @@
 #include "net/af.h"
 #include "net/conn/udp.h"
 #include "net/ipv6/addr.h"
+#include "dispatcher.h"
 
 #define UDP_RECV_PORT ((uint16_t) 8888) 	//Outer port for udp communication
 #define UDP_SRC_PORT ((uint16_t) 1234)		//Inner port fpr udp communication
@@ -18,21 +19,6 @@ typedef enum netif_mode {
 	CHANNEL
 } netif_mode_t;
 
-/**
-  Packet structure which will be sent via multicast
-*/
-typedef struct packet{
-	int header;
-	int sequence_number;
-	int message;
-} packet_t;
-
-/**
-  Print content of packet p, additional text can be printed to identify packets
-  \param info_text Additional info to identify packets on screen.
-  \param p Pointer to packet_t struct which content will be printed.
-*/
-void print_packet(char* info_text, packet_t* p);
 
 /**
   Send the content of p to multicast address 
@@ -47,7 +33,7 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst);
   Start a udp server on port UDP_RECV_PORT
   \return -1 on error, 0 otherwise.
 */
-int udp_server_start(void);
+int udp_server_start(dispatcher_callback_t *cb);
 
 /**
   Set the CHANNEL or POWER (enum netif_mode) to val.

@@ -4,58 +4,52 @@
 
 #include "thread.h"
 #include "connection.h"
+#include "HAF_protocol.h"
 #include "xtimer.h"
 
 
 
 #define SERVER_MSG_QUEUE_SIZE   (8)
-#define SERVER_BUFFER_SIZE      (sizeof(packet_t))
+#define MAX_RECV_BUFFER_SIZE	(sizeof(call_for_help_t))
 
 
 static char stack[THREAD_STACKSIZE_DEFAULT];
 static kernel_pid_t netif_dev = -1;
 
 
-
-void print_packet(char* info_text, packet_t* p){
-	printf("%s (t=%u):: header=%d, sequence_number=%d, message=%d\n", 
-				info_text, (uint) xtimer_now(), p->header, p->sequence_number, p->message);
-}
-
-void* _udp_server(void *args){
-    uint16_t port = UDP_RECV_PORT;
+void* _udp_server(void *args) {
+	uint16_t port = UDP_RECV_PORT;
+	dispatcher_callback_t cb = (dispatcher_callback_t) args;
     conn_udp_t conn;
-    packet_t server_buffer;
-    msg_t server_msg_queue[SERVER_MSG_QUEUE_SIZE];
+	uint8_t recv_buffer[MAX_RECV_BUFFER_SIZE];
     ipv6_addr_t server_addr = IPV6_ADDR_UNSPECIFIED;
+    msg_t server_msg_queue[SERVER_MSG_QUEUE_SIZE];
     msg_init_queue(server_msg_queue, SERVER_MSG_QUEUE_SIZE);
 
     if(conn_udp_create(&conn, &server_addr, sizeof(server_addr), AF_INET6, port) < 0) {
 		printf("Cannot create connection on port %d\n", port);
 		// TODO error handling
-        return NULL;
     }
 
     while (1) {
         int res;
         ipv6_addr_t src;
         size_t src_len = sizeof(ipv6_addr_t);
-        if ((res = conn_udp_recvfrom(&conn, &server_buffer, sizeof(server_buffer),
-                                     &src, &src_len, &port)) < 0) {
-            puts("Error while receiving\n");            
-            // TODO error handling
-        }
-        else if (res == 0) {
+		memset(recv_buffer, 0, sizeof(recv_buffer));
+        if((res = conn_udp_recvfrom(&conn, &recv_buffer, sizeof(recv_buffer),
+									&src, &src_len, &port)) < 0) {
+			puts("Error while receiving\n");            
+			// TODO error handling
+        } else if(res == 0) {
             puts("No data received\n");
             // TODO error handling
-        }
-        else {
-            print_packet("Received Packet", &server_buffer);
+        } else {
+            cb(recv_buffer);
         }
     }
-
-    return NULL;
 }
+
+
 
 int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 	int res;
@@ -75,9 +69,9 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
     return res;
 }
 
-int udp_server_start(void){
+int udp_server_start(dispatcher_callback_t *cb){
     if (thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1,
-                      THREAD_CREATE_STACKTEST, _udp_server, NULL, "HopAndFound UDP Server")
+                      THREAD_CREATE_STACKTEST, _udp_server, cb, "HopAndFound UDP Server")
         <= KERNEL_PID_UNDEF) {
         return -1;
     }
