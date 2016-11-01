@@ -4,6 +4,7 @@
 
 #include "console_map.h"
 #include "xtimer.h"
+#include "global.h"
 
 #define INACTIVE_NODE_CHARACTER ('X')
 #define ACTIVE_NODE_CHARACTER ('O')

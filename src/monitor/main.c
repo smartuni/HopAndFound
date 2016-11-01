@@ -5,19 +5,18 @@
 #include "dispatcher.h"
 #include "heartbeat.h"
 #include "xtimer.h"
+#include "global.h"
 
 int main(void){
 	
-	xtimer_sleep(1);
-	set_netif(POWER, -21);
-	set_netif(CHANNEL, 11);
+	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
+	set_netif(POWER, SIGNAL_STRENGTH_MONITOR);
+	set_netif(CHANNEL, NETIF_CHANNEL);
 	
-	puts("Monitor start!\n");
+	puts("Monitor start!");
 
 	udp_server_start((dispatcher_callback_t)dispatch_monitor);
-	
-	puts("Monitor Server up \n");
-	
+		
 	heartbeat_sender_start();
 	
 	return 0;

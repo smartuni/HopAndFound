@@ -6,6 +6,7 @@
 #include "connection.h"
 #include "HAF_protocol.h"
 #include "xtimer.h"
+#include "global.h"
 
 
 
@@ -88,7 +89,9 @@ kernel_pid_t _get_netif(void){
 	size_t numof = gnrc_netif_get(ifs);
 	
 	if (numof == 1){
+#ifdef HAF_DEBUG
 		printf("IFID=%d\n", ifs[0]);
+#endif
 		netif_dev = ifs[0];
 		return ifs[0];
 	} else {

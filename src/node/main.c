@@ -4,18 +4,17 @@
 #include "connection.h"
 #include "xtimer.h"
 #include "dispatcher.h"
+#include "global.h"
 
 int main(void){
 	
-	xtimer_sleep(1);
-	set_netif(POWER, -21);
-	set_netif(CHANNEL, 11);
+	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
+	set_netif(POWER,SIGNAL_STRENGTH_NODE);
+	set_netif(CHANNEL, NETIF_CHANNEL);
 	
 	puts("Node start!");
 
 	udp_server_start((dispatcher_callback_t)dispatch_node);
 	
-	puts("Node Server up");
-
 	return 0;
 }

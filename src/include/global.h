@@ -1,9 +1,18 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#define NODE_ID 1
-#define MONITORED_ITEM_ID 1
+#define NODE_ID (1)
+#define MONITORED_ITEM_ID (1)
+#define MAX_NODES (6)
 
+#define SIGNAL_STRENGTH_MONITOR (-30)
+#define SIGNAL_STRENGTH_MONITORED_ITEM (-21)
+#define SIGNAL_STRENGTH_NODE (-21)
 
+#define NETIF_CHANNEL (11)
 
-#endif
+#define STARTUP_SLEEPTIME_SEC (1)
+
+//#define HAF_DEBUG
+
+#endif /* GLOBAL_H */

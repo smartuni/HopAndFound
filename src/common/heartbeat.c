@@ -7,6 +7,7 @@
 #include "HAF_protocol.h"
 #include "connection.h"
 #include "localization_request.h"
+#include "global.h"
 
 #define HEARTBEAT_TIMEOUT_USEC	3000000
 #define HEARTBEAT_TIME_USEC		1000000
@@ -15,7 +16,9 @@ xtimer_t timer_recv;
 xtimer_t timer_send;
 
 void _heartbeat_handler_Task(void) {
+#ifdef HAF_DEBUG
 	puts("HEARTBEAT TIMEOUT!");
+#endif
 	send_localization_request();
 	xtimer_set(&timer_recv, HEARTBEAT_TIMEOUT_USEC);
 }
@@ -42,7 +45,9 @@ void _heartbeat_sender_Task(void) {
 	ret_pkg.type = HEARTBEAT;
 	udp_send(&ret_pkg, sizeof(ret_pkg), NULL);
 	xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
+#ifdef HAF_DEBUG
 	puts("HEARTBEAT sent.");
+#endif
 }
 
 void heartbeat_sender_start(void) {

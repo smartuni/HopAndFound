@@ -3,6 +3,7 @@
 #include "call_for_help.h"
 #include "localization_reply.h"
 #include "xtimer.h"
+#include "global.h"
 
 #define REQUEST_SLEEP_TIME		(1)
 
@@ -16,7 +17,9 @@ void* _localization_request_sender(void* args){
 	xtimer_sleep(REQUEST_SLEEP_TIME);
 	
 	send_call_for_help();
+#ifdef HAF_DEBUG
 	printf("CALL FOR HELP\n");
+#endif
 		
 	return NULL;
 }

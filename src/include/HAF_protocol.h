@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define MAX_NODES (6)
+#include "global.h"
 
 typedef enum pkg_type{
 	HEARTBEAT,

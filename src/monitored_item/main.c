@@ -5,22 +5,20 @@
 #include "xtimer.h"
 #include "dispatcher.h"
 #include "heartbeat.h"
-
+#include "global.h"
 
 #include "call_for_help.h" 
 
 
 int main(void){
 	
-	xtimer_sleep(1);
-	set_netif(POWER, -21);
-	set_netif(CHANNEL, 11);
+	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
+	set_netif(POWER, SIGNAL_STRENGTH_MONITORED_ITEM);
+	set_netif(CHANNEL, NETIF_CHANNEL);
 	
 	puts("Monitored Item start!");
 
 	udp_server_start((dispatcher_callback_t)dispatch_monitored_item);
-	
-	puts("Monitored Item Server up");
 	
 	heartbeat_handler_init();
 	

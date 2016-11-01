@@ -11,9 +11,7 @@ typedef enum handler{
 } handler_t;
 
 void handle_call_for_help(call_for_help_t* p, handler_t h);
-
 void send_call_for_help(void);
-
 void forward_call_for_help(call_for_help_t* p);
 
 #endif
