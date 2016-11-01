@@ -13,6 +13,6 @@
 
 #define STARTUP_SLEEPTIME_SEC (1)
 
-//#define HAF_DEBUG
+#define HAF_DEBUG
 
 #endif /* GLOBAL_H */

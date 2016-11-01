@@ -26,3 +26,10 @@ void handle_localization_reply(localization_reply_t* p){
 uint8_t* get_node_list(void){
 	return node_list;
 }
+
+void resetNodeList(void) {
+	int i;
+	for(i = 0; i < MAX_NODES; i++) {
+		node_list[i] = 0;
+	}
+}

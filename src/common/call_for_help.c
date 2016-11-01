@@ -21,6 +21,12 @@ void send_call_for_help(void) {
 	pkg.mi_id = MONITORED_ITEM_ID; //<-------------DEFINE ANLEGEN
 	memcpy(&pkg.node_list, get_node_list(), MAX_NODES); //<-----------getter für nodelist
 	udp_send(&pkg, sizeof(pkg), NULL);	
+	
+#ifdef HAF_DEBUG
+	printConsoleMap(get_node_list(), MAX_NODES);
+#endif
+
+resetNodeList();
 }
 
 
