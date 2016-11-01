@@ -1,11 +1,17 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#define NODE_ID (1)
+<<<<<<< HEAD
+#define NODE_ID (0)
+=======
+#define NODE_ID (5)
+>>>>>>> 9184dbb86c49a0d13eb933a496d4b67c418768f1
 #define MONITORED_ITEM_ID (1)
 #define MAX_NODES (6)
 
-#define SIGNAL_STRENGTH_MONITOR (-30)
+#define MONITORED_ITEM_IP ("FF80::F8E3:4E62:71BA:600A")
+
+#define SIGNAL_STRENGTH_MONITOR (-35)
 #define SIGNAL_STRENGTH_MONITORED_ITEM (-21)
 #define SIGNAL_STRENGTH_NODE (-21)
 
