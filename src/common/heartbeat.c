@@ -21,7 +21,7 @@ void _heartbeat_handler_Task(void) {
 }
 
 void _heartbeat_handler(void) {
-	xtimer_remove(&timer_recv);
+	//xtimer_remove(&timer_recv);
 	xtimer_set(&timer_recv, HEARTBEAT_TIMEOUT_USEC);
 }
 
