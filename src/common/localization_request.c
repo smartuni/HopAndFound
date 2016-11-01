@@ -8,16 +8,14 @@
 
 static char stack[THREAD_STACKSIZE_DEFAULT];
 
-void* _localization_request_sender(void* args){
-	printf("_localization_request_sender send request thread\n");
-	
+void* _localization_request_sender(void* args){	
 	localization_request_t ret_pkg;
 	ret_pkg.type = LOCALIZATION_REQUEST;
 	udp_send(&ret_pkg, sizeof(ret_pkg), NULL);
 	
 	xtimer_sleep(REQUEST_SLEEP_TIME);
 	
-	//send_call_for_help();
+	send_call_for_help();
 	printf("CALL FOR HELP\n");
 		
 	return NULL;
