@@ -24,7 +24,7 @@ void send_call_for_help(void) {
 	memcpy(&pkg.node_list, get_node_list(), MAX_NODES); //<-----------getter für nodelist
 	udp_send(&pkg, sizeof(pkg), NULL);	
 	
-#ifdef HAF_DEBUG
+#ifdef HAF_DEBUG_NODE_MAP
 	printConsoleMap(get_node_list(), MAX_NODES);
 #endif
 

@@ -1,11 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-<<<<<<< HEAD
 #define NODE_ID (0)
-=======
-#define NODE_ID (5)
->>>>>>> 9184dbb86c49a0d13eb933a496d4b67c418768f1
 #define MONITORED_ITEM_ID (1)
 #define MAX_NODES (6)
 
@@ -20,5 +16,7 @@
 #define STARTUP_SLEEPTIME_SEC (1)
 
 #define HAF_DEBUG
+#define HAF_DEBUG_NODE_MAP
+#define HAF_DEBUG_DISPATCH
 
 #endif /* GLOBAL_H */
