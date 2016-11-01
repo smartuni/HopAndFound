@@ -40,10 +40,13 @@ void handle_heartbeat(void) {
 	_heartbeat_handler();
 }
 
-void _heartbeat_sender_Task(void) {
+void _heartbeat_sender_Task(void) {	
+    ipv6_addr_t d = IPV6_ADDR_UNSPECIFIED;
+	ipv6_addr_from_str(&d, MONITORED_ITEM_IP);
+	
 	heartbeat_t ret_pkg;
 	ret_pkg.type = HEARTBEAT;
-	udp_send(&ret_pkg, sizeof(ret_pkg), NULL);
+	udp_send(&ret_pkg, sizeof(ret_pkg), &d);
 	xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
 #ifdef HAF_DEBUG
 	puts("HEARTBEAT sent.");
