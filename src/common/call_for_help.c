@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <string.h>
 #include "global.h"
 #include "call_for_help.h"
 #include "console_map.h"
@@ -26,6 +28,9 @@ void send_call_for_help(void) {
 
 void forward_call_for_help(call_for_help_t* p) {
 	if (p->seq_nr > seq_nr_recv){
+		#ifdef HAF_DEBUG
+			printf("CALL FOR HELP forward.\n");
+		#endif
 		udp_send(p, sizeof(p), NULL);
 		seq_nr_recv = p->seq_nr;
 	}
