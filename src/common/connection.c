@@ -10,7 +10,7 @@
 
 
 
-#define SERVER_MSG_QUEUE_SIZE   (128)
+#define SERVER_MSG_QUEUE_SIZE   (64)
 #define MAX_RECV_BUFFER_SIZE	(sizeof(call_for_help_t))
 
 
