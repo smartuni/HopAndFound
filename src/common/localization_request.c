@@ -5,7 +5,7 @@
 #include "xtimer.h"
 #include "global.h"
 
-#define REQUEST_SLEEP_TIME		(1)
+#define REQUEST_SLEEP_TIME		(2)
 
 static char stack[THREAD_STACKSIZE_DEFAULT];
 

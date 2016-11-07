@@ -9,8 +9,8 @@
 #include "localization_request.h"
 #include "global.h"
 
-#define HEARTBEAT_TIMEOUT_USEC	3000000
-#define HEARTBEAT_TIME_USEC		1000000
+#define HEARTBEAT_TIMEOUT_USEC	4000000
+#define HEARTBEAT_TIME_USEC		2000000
 
 xtimer_t timer_recv;
 xtimer_t timer_send;
