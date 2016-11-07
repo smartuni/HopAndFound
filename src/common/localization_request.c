@@ -31,7 +31,5 @@ void send_localization_request(void){
 }
 
 void handle_localization_request(ipv6_addr_t* dst){
-	ipv6_addr_t dst_cpy;
-	memcpy(&dst_cpy, (ipv6_addr_t*) args, sizeof(ipv6_addr_t));
-	send_localization_reply(&dst_cpy);
+	send_localization_reply(dst);
 }
