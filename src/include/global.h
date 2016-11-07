@@ -15,8 +15,9 @@
 
 #define STARTUP_SLEEPTIME_SEC (1)
 
-#define HAF_DEBUG
-#define HAF_DEBUG_NODE_MAP
-#define HAF_DEBUG_DISPATCH
+//#define HAF_DEBUG
+//#define HAF_DEBUG_NODE_MAP
+//#define HAF_DEBUG_DISPATCH
+#define HAF_DEBUG_DONT_PRINT_EMPTY_MAP
 
 #endif /* GLOBAL_H */

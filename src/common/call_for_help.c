@@ -47,7 +47,18 @@ void handle_call_for_help(call_for_help_t* p, handler_t h) {
 		forward_call_for_help(p);
 	} else if ( h == MONITOR ) {
 		if ( p->mi_id == MONITORED_ITEM_ID ) {
+#ifdef HAF_DEBUG_DONT_PRINT_EMPTY_MAP
+			int i;
+			
+			for(i = 0; i < MAX_NODES; i++){
+				if (p->node_list[i] == 1){
+					printConsoleMap(p->node_list, MAX_NODES);
+					break;
+				}
+			}
+#else
 			printConsoleMap(p->node_list, MAX_NODES);
+#endif
 		}
 	}
 }
