@@ -24,22 +24,14 @@ void* _localization_request_sender(void* args){
 	return NULL;
 }
 
-void* _localization_request_handler(void* args){
-	ipv6_addr_t dst_cpy;
-	memcpy(&dst_cpy, (ipv6_addr_t*) args, sizeof(ipv6_addr_t));
-	send_localization_reply(&dst_cpy);
-	
-	return NULL;
-}
-
-void handle_localization_request(ipv6_addr_t* dst){
-	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 2, THREAD_CREATE_STACKTEST, 
-						_localization_request_handler, dst, "localization_request_handler");
-}
-
-
 void send_localization_request(void){
 	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 2, THREAD_CREATE_STACKTEST, 
 						_localization_request_sender, NULL, "localization_request_sender");	
 	
+}
+
+void handle_localization_request(ipv6_addr_t* dst){
+	ipv6_addr_t dst_cpy;
+	memcpy(&dst_cpy, (ipv6_addr_t*) args, sizeof(ipv6_addr_t));
+	send_localization_reply(&dst_cpy);
 }
