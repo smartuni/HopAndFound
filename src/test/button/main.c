@@ -3,15 +3,10 @@
 
 #include "global.h"
 #include "haf_button.h"
-#include "xtimer.h"
 
 int main(void) {
-	button_init();
+	haf_button_init(haf_button_cb_node);
 	
-	while(1){
-		printf("var: %d\n", haf_button_var);
-		xtimer_sleep(2);
-	}
-	
+	while(1){}
 	return 0;
 }
