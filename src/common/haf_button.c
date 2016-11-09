@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "global.h"
 #include "haf_button.h"
 #include "board.h"
 #include "periph/gpio.h"
 #include "xtimer.h"
+#include "localization_request.h"
 
 #define DEBOUNCE_TIME_USEC	250000
 
@@ -23,7 +25,7 @@ void _debounce_cb(void) {
 void haf_button_cb_node(void *arg) {
 	if(_debounced) {
 		_debounced = false;
-		LED0_TOGGLE;
+		send_localization_request_node();
 		xtimer_set(&_timer_debounce, DEBOUNCE_TIME_USEC);
 	}
 }
