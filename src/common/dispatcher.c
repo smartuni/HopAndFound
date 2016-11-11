@@ -8,8 +8,7 @@
 #include "localization_reply.h"
 #include "localization_request.h"
 #include "heartbeat.h"
-
-
+#include "haf_LED.h"
 
 void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 	switch(recv_buffer[0]) {
@@ -92,6 +91,10 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 #endif
 			
 			handle_localization_request(address);
+
+#ifdef TEST_PRESENTATION
+			start_LED_blink();
+#endif /* TEST_PRESENTATION */
 			
 			break;
 		}

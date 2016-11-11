@@ -7,6 +7,7 @@
 #include "periph/gpio.h"
 #include "xtimer.h"
 #include "localization_request.h"
+#include "heartbeat.h"
 
 #define DEBOUNCE_TIME_USEC	250000
 
@@ -31,11 +32,25 @@ void haf_button_cb_node(void *arg) {
 }
 
 void haf_button_cb_monitor(void *arg) {
-	
+	if(_debounced) {
+		_debounced = false;
+		if(getHeartbeatActive()) {
+			setHeartbeatActive(false);
+			LED0_ON;
+		} else {
+			setHeartbeatActive(true);
+			LED0_OFF;
+		}
+		xtimer_set(&_timer_debounce, DEBOUNCE_TIME_USEC);
+	}
 }
 
 void haf_button_cb_monitored_item(void *arg) {
-	
+	if(_debounced) {
+		_debounced = false;
+		//TODO: add functionality
+		xtimer_set(&_timer_debounce, DEBOUNCE_TIME_USEC);
+	}
 }
 
 int haf_button_init(haf_button_cb_t cb) {

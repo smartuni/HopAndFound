@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-#include "thread.h"
 #include "xtimer.h"
 
 #include "heartbeat.h"
@@ -14,6 +13,16 @@
 
 xtimer_t timer_recv;
 xtimer_t timer_send;
+
+bool heartbeatActive;
+
+bool getHeartbeatActive(void) {
+	return heartbeatActive;
+}
+
+void setHeartbeatActive(bool status) {
+	heartbeatActive = status;
+}
 
 void _heartbeat_handler_Task(void) {
 #ifdef HAF_DEBUG
@@ -41,6 +50,9 @@ void handle_heartbeat(void) {
 }
 
 void _heartbeat_sender_Task(void) {	
+#ifdef TEST_PRESENTATION
+	if(heartbeatActive) {
+#endif /* TEST_PRESENTATION */
     ipv6_addr_t d = IPV6_ADDR_UNSPECIFIED;
 	ipv6_addr_from_str(&d, MONITORED_ITEM_IP);
 	
@@ -50,10 +62,14 @@ void _heartbeat_sender_Task(void) {
 	xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
 #ifdef HAF_DEBUG
 	puts("HEARTBEAT sent.");
-#endif
+#endif /* HAF_DEBUG */
+#ifdef TEST_PRESENTATION
+	}
+#endif /* TEST_PRESENTATION */
 }
 
 void heartbeat_sender_start(void) {
+	heartbeatActive = true;
 	xtimer_init();
     timer_send.target = 0;
     timer_send.long_target = 0;
