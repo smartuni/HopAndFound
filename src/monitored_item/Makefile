@@ -22,8 +22,9 @@ QUIET ?= 1
 # Modules to include:
 USEMODULE += gnrc_netdev_default
 USEMODULE += auto_init_gnrc_netif
-USEMODULE += gnrc_ipv6_default
-USEMODULE += gnrc_conn_udp
+USEMODULE += gnrc_ipv6
+USEMODULE += gnrc_sock_check_reuse
+USEMODULE += gnrc_sock_udp
 USEMODULE += xtimer
 USEMODULE += HAF-common
 
