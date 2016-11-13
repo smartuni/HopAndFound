@@ -3,8 +3,7 @@
 
 #include "net/gnrc/netapi.h"
 #include "net/af.h"
-#include "net/conn/udp.h"
-#include "net/ipv6/addr.h"
+#include "net/sock/udp.h"
 #include "dispatcher.h"
 
 #define UDP_RECV_PORT ((uint16_t) 8888) 	//Outer port for udp communication
@@ -27,7 +26,7 @@ typedef enum netif_mode {
   \param dst Pointer to destination address. May be NULL for multicast.
   \return The result of conn_udp_sendto().
 */
-int udp_send(void* p, size_t p_size, ipv6_addr_t* dst);
+int udp_send(void* p, size_t p_size, sock_udp_ep_t* dst);
 
 /**
   Start a udp server on port UDP_RECV_PORT

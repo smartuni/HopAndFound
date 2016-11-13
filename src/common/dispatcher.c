@@ -11,7 +11,7 @@
 
 
 
-void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
+void dispatch_monitored_item(uint8_t recv_buffer[], sock_udp_ep_t* address) {
 	switch(recv_buffer[0]) {
 		case HEARTBEAT: {
 			heartbeat_t heartbeat;
@@ -50,7 +50,7 @@ void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 	}
 }
 
-void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
+void dispatch_monitor(uint8_t recv_buffer[], sock_udp_ep_t* address) {
 	switch(recv_buffer[0]) {
 		case CALL_FOR_HELP: {
 			call_for_help_t call_for_help;
@@ -80,7 +80,7 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 	}
 }
 
-void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
+void dispatch_node(uint8_t recv_buffer[], sock_udp_ep_t* address) {
 	switch(recv_buffer[0]) {
 		case LOCALIZATION_REQUEST: {
 			localization_request_t localization_request;

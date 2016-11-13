@@ -10,74 +10,64 @@
 
 
 
-#define SERVER_MSG_QUEUE_SIZE   (16)
+#define SERVER_MSG_QUEUE_SIZE   (8)
 #define MAX_RECV_BUFFER_SIZE	(sizeof(call_for_help_t))
 
 
 static char stack[THREAD_STACKSIZE_DEFAULT];
 static kernel_pid_t netif_dev = -1;
+static sock_udp_t sock;
 
 
-void* _udp_server(void *args) {
-	uint16_t port = UDP_RECV_PORT;
-	dispatcher_callback_t cb = (dispatcher_callback_t) args;
-    conn_udp_t conn;
+void* _udp_server(void *args){
+	sock_udp_ep_t local = SOCK_IPV6_EP_ANY;
+	sock_udp_ep_t remote = { .family = AF_INET6 };
 	uint8_t recv_buffer[MAX_RECV_BUFFER_SIZE];
-    ipv6_addr_t server_addr = IPV6_ADDR_UNSPECIFIED;
-    msg_t server_msg_queue[SERVER_MSG_QUEUE_SIZE];
-    msg_init_queue(server_msg_queue, SERVER_MSG_QUEUE_SIZE);
-
-    if(conn_udp_create(&conn, &server_addr, sizeof(server_addr), AF_INET6, port) < 0) {
-		printf("Cannot create connection on port %d\n", port);
+	dispatcher_callback_t cb = (dispatcher_callback_t) args;
+	
+	local.port = UDP_RECV_PORT;
+	
+	if (sock_udp_create(&sock, &local, NULL, 0) < 0){
+		puts("Error creating UDP sock");
 		// TODO error handling
-    }
-
-    while (1) {
-        int res;
-        ipv6_addr_t src;
-        size_t src_len = sizeof(ipv6_addr_t);
-		memset(recv_buffer, 0, sizeof(recv_buffer));
-        if((res = conn_udp_recvfrom(&conn, &recv_buffer, sizeof(recv_buffer),
-									&src, &src_len, &port)) < 0) {
-			puts("Error while receiving\n");            
+		return NULL;
+	}
+	
+	while (1){
+		if (sock_udp_recv(&sock, recv_buffer, sizeof(recv_buffer),
+			SOCK_NO_TIMEOUT, &remote) < 0) {
+			puts("Error receiving message");
 			// TODO error handling
-        } else if(res == 0) {
-            puts("No data received\n");
-            // TODO error handling
-        } else {
-            cb(recv_buffer, &src);
-        }
-    }
+		} else {
+			cb(recv_buffer, &remote);
+		}
+	}
 }
 
 
 
-int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
+int udp_send(void* p, size_t p_size, sock_udp_ep_t* dst){
 	int res;
-    ipv6_addr_t src = IPV6_ADDR_UNSPECIFIED;
-    ipv6_addr_t d = IPV6_ADDR_UNSPECIFIED;
-    
-    if (dst != NULL){
+	sock_udp_ep_t d = SOCK_IPV6_EP_ANY;
+	
+	if (dst != NULL){
 		d = *dst;
 	}
-    
-    if (ipv6_addr_from_str(&d, UDP_MULTICAST_ADDRESS) == NULL) {
-        return -1;
-    }
-    
-    res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
-    
-    return res;
+	
+	res = sock_udp_send(&sock, p, sizeof(p), &d);
+	// TODO error handling
+	
+	return res;
 }
 
 int udp_server_start(dispatcher_callback_t cb){
-    if (thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1,
-                      THREAD_CREATE_STACKTEST, _udp_server, cb, "HopAndFound UDP Server")
-        <= KERNEL_PID_UNDEF) {
-        return -1;
-    }
+	if (thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1,
+					  THREAD_CREATE_STACKTEST, _udp_server, cb, "HopAndFound UDP Server")
+		<= KERNEL_PID_UNDEF) {
+		return -1;
+	}
 
-    return 0;
+	return 0;
 }
 
 kernel_pid_t _get_netif(void){
