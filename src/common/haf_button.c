@@ -18,11 +18,6 @@ void _debounce_cb(void) {
 	_debounced = true;
 }
 
-/* 
- * LED0_TOGGLE	=	RED
- * LED1_TOGGLE	=	GREEN
- * LED2_TOGGLE	=	BLUE
- */
 void haf_button_cb_node(void *arg) {
 	if(_debounced) {
 		_debounced = false;

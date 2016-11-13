@@ -67,6 +67,10 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			
 			handle_call_for_help(&call_for_help, MONITOR);
 			
+#ifdef TEST_PRESENTATION
+			start_LED_blink(LED_RED, 3);
+#endif /* TEST_PRESENTATION */
+			
 			break;
 		}
 		default: {
@@ -93,7 +97,7 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			handle_localization_request(address);
 
 #ifdef TEST_PRESENTATION
-			start_LED_blink();
+			start_LED_blink(LED_BLUE, 3);
 #endif /* TEST_PRESENTATION */
 			
 			break;
