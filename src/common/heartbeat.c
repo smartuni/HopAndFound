@@ -8,6 +8,7 @@
 #include "connection.h"
 #include "localization_request.h"
 #include "global.h"
+#include "net/ipv6/addr.h"
 
 #define HEARTBEAT_TIMEOUT_USEC	4000000
 #define HEARTBEAT_TIME_USEC		2000000
@@ -42,8 +43,9 @@ void handle_heartbeat(void) {
 
 void _heartbeat_sender_Task(void) {	
     sock_udp_ep_t d = { .family = AF_INET6,
-						.port = UDP_RECV_PORT,
-						.addr = { .ipv6 = MONITORED_ITEM_IP } };	
+						.port = UDP_RECV_PORT};
+						
+	ipv6_addr_from_str((ipv6_addr_t *)&d.addr.ipv6, MONITORED_ITEM_IP);
 	
 	heartbeat_t ret_pkg;
 	ret_pkg.type = HEARTBEAT;

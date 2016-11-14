@@ -21,7 +21,8 @@ static sock_udp_t sock;
 
 void* _udp_server(void *args){
 	sock_udp_ep_t local = SOCK_IPV6_EP_ANY;
-	sock_udp_ep_t remote = { .family = AF_INET6 };
+	sock_udp_ep_t remote;
+	
 	uint8_t recv_buffer[MAX_RECV_BUFFER_SIZE];
 	dispatcher_callback_t cb = (dispatcher_callback_t) args;
 	
@@ -48,14 +49,13 @@ void* _udp_server(void *args){
 
 int udp_send(void* p, size_t p_size, sock_udp_ep_t* dst){
 	int res;
-	sock_udp_ep_t d = SOCK_IPV6_EP_ANY;
 	
 	if (dst != NULL){
-		d = *dst;
+		res = sock_udp_send(&sock, p, sizeof(p), dst);
+	} else {
+		sock_udp_ep_t d = SOCK_IPV6_EP_ANY;
+		res = sock_udp_send(&sock, p, sizeof(p), &d);
 	}
-	
-	res = sock_udp_send(&sock, p, sizeof(p), &d);
-	// TODO error handling
 	
 	return res;
 }
