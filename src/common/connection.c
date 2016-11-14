@@ -27,7 +27,7 @@ void* _udp_server(void *args){
 	
 	local.port = UDP_RECV_PORT;
 	
-	if (sock_udp_create(&sock, &local, NULL, 0) < 0){
+	if (sock_udp_create(&sock, &local, NULL, SOCK_FLAGS_REUSE_EP) < 0){
 		puts("Error creating UDP sock");
 		// TODO error handling
 		return NULL;
