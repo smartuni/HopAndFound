@@ -6,6 +6,8 @@
 #include "heartbeat.h"
 #include "xtimer.h"
 #include "global.h"
+#include "display.h"
+
 
 int main(void){
 	
@@ -15,9 +17,13 @@ int main(void){
 	
 	puts("Monitor start!");
 
+	displayInit();
+	printDisplayMap();
+	
 	udp_server_start((dispatcher_callback_t)dispatch_monitor);
 		
 	heartbeat_sender_start();
 	
+
 	return 0;
 }
