@@ -7,8 +7,7 @@
 #include "HAF_protocol.h"
 #include "xtimer.h"
 #include "global.h"
-
-
+#include "net/ipv6/addr.h"
 
 #define SERVER_MSG_QUEUE_SIZE   (8)
 #define MAX_RECV_BUFFER_SIZE	(sizeof(call_for_help_t))
@@ -51,12 +50,24 @@ int udp_send(void* p, size_t p_size, sock_udp_ep_t* dst){
 	int res;
 	
 	if (dst != NULL){
-		res = sock_udp_send(&sock, p, sizeof(p), dst);
+		res = sock_udp_send(&sock, p, p_size, dst);
 	} else {
-		sock_udp_ep_t d = SOCK_IPV6_EP_ANY;
-		res = sock_udp_send(&sock, p, sizeof(p), &d);
+		sock_udp_ep_t remote = {.family = AF_INET6,
+								.port = UDP_RECV_PORT,
+								.netif = SOCK_ADDR_ANY_NETIF};
+									
+		ipv6_addr_set_all_nodes_multicast((ipv6_addr_t *)&remote.addr.ipv6,
+										  IPV6_ADDR_MCAST_SCP_LINK_LOCAL);
+  
+		res = sock_udp_send(&sock, p, p_size, &remote);
 	}
 	
+#ifdef HAF_DEBUG
+	if (res < 0){
+		printf("SEND ERROR ERRVAL %d\n", res);
+	}
+#endif
+
 	return res;
 }
 
