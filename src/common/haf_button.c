@@ -31,10 +31,10 @@ void haf_button_cb_monitor(void *arg) {
 		_debounced = false;
 		if(getHeartbeatActive()) {
 			setHeartbeatActive(false);
-			LED0_ON;
+			LED2_ON;
 		} else {
 			setHeartbeatActive(true);
-			LED0_OFF;
+			LED2_OFF;
 		}
 		xtimer_set(&_timer_debounce, DEBOUNCE_TIME_USEC);
 	}

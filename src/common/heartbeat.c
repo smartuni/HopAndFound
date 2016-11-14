@@ -63,13 +63,13 @@ void _heartbeat_sender_Task(void) {
 	heartbeat_t ret_pkg;
 	ret_pkg.type = HEARTBEAT;
 	udp_send(&ret_pkg, sizeof(ret_pkg), &d);
-	xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
 #ifdef HAF_DEBUG
 	puts("HEARTBEAT sent.");
 #endif /* HAF_DEBUG */
 #ifdef TEST_PRESENTATION
 	}
 #endif /* TEST_PRESENTATION */
+	xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
 }
 
 void heartbeat_sender_start(void) {
