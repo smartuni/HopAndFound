@@ -14,7 +14,11 @@ void* _localization_request_sender(void* args){
 	localization_request_t ret_pkg;
 	ret_pkg.type = LOCALIZATION_REQUEST;
 	udp_send(&ret_pkg, sizeof(ret_pkg), NULL);
-	
+
+#ifdef HAF_DEBUG
+	printf("LOCALIZATION_REQUEST sent.\n");
+#endif
+
 	xtimer_sleep(REQUEST_SLEEP_TIME);
 	
 	send_call_for_help();
@@ -39,6 +43,10 @@ void* _localization_request_sender_node(void* args){
 	localization_request_t ret_pkg;
 	ret_pkg.type = LOCALIZATION_REQUEST;
 	udp_send(&ret_pkg, sizeof(ret_pkg), NULL);
+	
+#ifdef HAF_DEBUG
+	printf("LOCALIZATION_REQUEST sent.\n");
+#endif
 	
 	xtimer_sleep(REQUEST_SLEEP_TIME);
 	
