@@ -7,6 +7,7 @@
 #include "connection.h"
 #include "localization_request.h"
 #include "global.h"
+#include "haf_LED.h"
 
 #define HEARTBEAT_TIMEOUT_USEC	4000000
 #define HEARTBEAT_TIME_USEC		2000000
@@ -28,6 +29,9 @@ void _heartbeat_handler_Task(void) {
 #ifdef HAF_DEBUG
 	puts("HEARTBEAT TIMEOUT!");
 #endif
+#ifdef TEST_PRESENTATION
+			start_LED_blink(LED_RED, 3);
+#endif /* TEST_PRESENTATION */
 	send_localization_request();
 	xtimer_set(&timer_recv, HEARTBEAT_TIMEOUT_USEC);
 }
