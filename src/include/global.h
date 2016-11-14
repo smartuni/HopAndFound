@@ -1,7 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#define NODE_ID (0)
+#define NODE_ID (1)
 #define MONITORED_ITEM_ID (1)
 #define MAX_NODES (6)
 

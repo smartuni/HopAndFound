@@ -3,12 +3,14 @@
 #include "connection.h"
 #include "global.h"
 
+#include <stdlib.h>
+
 uint8_t node_list[MAX_NODES];
  
 void send_localization_reply(ipv6_addr_t* dst){
 	localization_reply_t ret_pkg;
 	ret_pkg.type = LOCALIZATION_REPLY;
-	ret_pkg.node_id = NODE_ID;
+	ret_pkg.node_id = rand() % 50;//NODE_ID;
 	udp_send(&ret_pkg, sizeof(ret_pkg), dst);
 }
  

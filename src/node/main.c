@@ -13,7 +13,7 @@ int main(void){
 	set_netif(POWER,SIGNAL_STRENGTH_NODE);
 	set_netif(CHANNEL, NETIF_CHANNEL);
 #ifdef HAF_DEBUG
-	puts("Node start!");
+	printf("Node start! ID: %d\n", NODE_ID);
 #endif
 #ifdef TEST_PRESENTATION
 	init_LED();

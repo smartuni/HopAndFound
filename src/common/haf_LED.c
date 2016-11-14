@@ -48,6 +48,13 @@ void* _LED_blink(void* args) {
 		
 		xtimer_usleep(BLINK_FREQ_USEC);
 	}
+	if(_led == LED_RED) {
+			LED0_OFF;
+		} else if(_led == LED_GREEN) {
+			LED1_OFF;
+		} else if(_led == LED_BLUE) {
+			LED2_OFF;
+		}
 	mutex_unlock(&mtx);
 	return NULL;
 }
