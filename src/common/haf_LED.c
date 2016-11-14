@@ -5,6 +5,8 @@
 #include "thread.h"
 #include "xtimer.h"
 
+#include "mutex.h"
+
 #include "global.h"
 #include "haf_LED.h"
 
@@ -16,6 +18,8 @@
  * Time in which LED is toggled on and off.
  */
 #define BLINK_FREQ_USEC			250000
+
+mutex_t mtx;
 
 /* 
  * Current LED.
@@ -44,15 +48,21 @@ void* _LED_blink(void* args) {
 		
 		xtimer_usleep(BLINK_FREQ_USEC);
 	}
+	mutex_unlock(&mtx);
 	return NULL;
+}
+
+void init_LED(void) {
+	mutex_init(&mtx);
 }
 
 /* 
  * Starts thread for blinking LED.
  */
 void start_LED_blink(led_t led, uint time) {
+	mutex_trylock(&mtx);
 	_led = led;
 	_time = time;
 	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 3, THREAD_CREATE_STACKTEST, 
-						_LED_blink, NULL, "_LED_blink");	
+					_LED_blink, NULL, "_LED_blink");
 }

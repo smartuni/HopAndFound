@@ -15,6 +15,11 @@ typedef enum {
 } led_t;
 
 /* 
+ * Initializes LED mutex.
+ */
+void init_LED(void);
+
+/* 
  * Starts thread for blinking LED.
  */
 void start_LED_blink(led_t led, uint time);

@@ -61,6 +61,5 @@ void* _localization_request_sender_node(void* args){
 
 void send_localization_request_node(void) {
 	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 2, THREAD_CREATE_STACKTEST, 
-						_localization_request_sender_node, NULL, "localization_request_sender");	
-	
+						_localization_request_sender_node, NULL, "localization_request_sender");
 }

@@ -6,6 +6,7 @@
 #include "connection.h"
 #include "dispatcher.h"
 #include "haf_button.h"
+#include "haf_LED.h"
 #include "heartbeat.h"
 
 int main(void){
@@ -16,6 +17,7 @@ int main(void){
 	puts("Monitor start!");
 #endif
 #ifdef TEST_PRESENTATION
+	init_LED();
 	haf_button_init(haf_button_cb_monitor);
 #endif
 	udp_server_start((dispatcher_callback_t)dispatch_monitor);

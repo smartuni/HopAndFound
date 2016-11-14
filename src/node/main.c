@@ -6,6 +6,7 @@
 #include "connection.h"
 #include "dispatcher.h"
 #include "haf_button.h"
+#include "haf_LED.h"
 
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
@@ -15,6 +16,7 @@ int main(void){
 	puts("Node start!");
 #endif
 #ifdef TEST_PRESENTATION
+	init_LED();
 	haf_button_init(haf_button_cb_node);
 #endif
 	udp_server_start((dispatcher_callback_t)dispatch_node);

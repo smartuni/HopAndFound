@@ -65,11 +65,11 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			}
 #endif
 			
-			handle_call_for_help(&call_for_help, MONITOR);
-			
 #ifdef TEST_PRESENTATION
 			start_LED_blink(LED_RED, 3);
 #endif /* TEST_PRESENTATION */
+
+			handle_call_for_help(&call_for_help, MONITOR);
 			
 			break;
 		}
@@ -94,11 +94,11 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			printf("type: %u\n", localization_request.type);
 #endif
 			
-			handle_localization_request(address);
-
 #ifdef TEST_PRESENTATION
 			start_LED_blink(LED_BLUE, 3);
 #endif /* TEST_PRESENTATION */
+			
+			handle_localization_request(address);
 			
 			break;
 		}
