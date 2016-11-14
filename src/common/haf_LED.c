@@ -2,9 +2,7 @@
 
 #include "board.h"
 #include "periph/gpio.h"
-#include "thread.h"
 #include "xtimer.h"
-
 #include "mutex.h"
 
 #include "global.h"
@@ -19,8 +17,14 @@
  */
 #define BLINK_FREQ_USEC			250000
 
+/* 
+ * Mutex to ensure only one blinking process is active.
+ */
 mutex_t mtx;
-
+/* 
+ * Timer for LED toggle.
+ */
+xtimer_t blink_timer;
 /* 
  * Current LED.
  */
@@ -29,15 +33,17 @@ led_t _led;
  * Time the LED blinks in seconds.
  */
 uint _time;
-
-static char stack[THREAD_STACKSIZE_DEFAULT];
+/* 
+ * LED toggle index.
+ */
+uint _index = 0;
 
 /* 
- * Thread for blinking LED.
+ * Timer callback function for toggling LED.
  */
-void* _LED_blink(void* args) {
-	int i;
-	for(i = 0; i < (_time * BLINK_MULTIPLIER_USEC) / BLINK_FREQ_USEC; i++) {
+void _blink_timer_task(void) {
+	if(_index < (_time * BLINK_MULTIPLIER_USEC / BLINK_FREQ_USEC)) {
+		_index++;
 		if(_led == LED_RED) {
 			LED0_TOGGLE;
 		} else if(_led == LED_GREEN) {
@@ -45,32 +51,32 @@ void* _LED_blink(void* args) {
 		} else if(_led == LED_BLUE) {
 			LED2_TOGGLE;
 		}
-		
-		xtimer_usleep(BLINK_FREQ_USEC);
-	}
-	if(_led == LED_RED) {
+		xtimer_set(&blink_timer, BLINK_FREQ_USEC);
+	} else {
+		_index = 0;
+		if(_led == LED_RED) {
 			LED0_OFF;
 		} else if(_led == LED_GREEN) {
 			LED1_OFF;
 		} else if(_led == LED_BLUE) {
 			LED2_OFF;
 		}
-	mutex_unlock(&mtx);
-	return NULL;
+		mutex_unlock(&mtx);
+	}
 }
 
 void init_LED(void) {
 	mutex_init(&mtx);
+	xtimer_init();
+    blink_timer.target = 0;
+    blink_timer.long_target = 0;
+    blink_timer.callback = (void*)_blink_timer_task;
 }
 
-/* 
- * Starts thread for blinking LED.
- */
 void start_LED_blink(led_t led, uint time) {
 	if(mutex_trylock(&mtx) == 1) {
 		_led = led;
 		_time = time;
-		thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 3, THREAD_CREATE_STACKTEST, 
-						_LED_blink, NULL, "_LED_blink");
+		xtimer_set(&blink_timer, BLINK_FREQ_USEC);
 	}
 }
