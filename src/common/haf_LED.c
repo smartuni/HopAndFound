@@ -60,9 +60,10 @@ void init_LED(void) {
  * Starts thread for blinking LED.
  */
 void start_LED_blink(led_t led, uint time) {
-	mutex_trylock(&mtx);
-	_led = led;
-	_time = time;
-	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 3, THREAD_CREATE_STACKTEST, 
-					_LED_blink, NULL, "_LED_blink");
+	if(mutex_trylock(&mtx) == 1) {
+		_led = led;
+		_time = time;
+		thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 3, THREAD_CREATE_STACKTEST, 
+						_LED_blink, NULL, "_LED_blink");
+	}
 }
