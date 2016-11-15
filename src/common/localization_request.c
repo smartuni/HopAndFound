@@ -1,12 +1,18 @@
 #include "global.h"
 #include "localization_request.h"
 #include "thread.h"
+#include "mutex.h"
 #include "call_for_help.h"
 #include "localization_reply.h"
 #include "xtimer.h"
 #include "console_map.h"
 
 #define REQUEST_SLEEP_TIME (2)
+
+/* 
+ * Mutex to ensure only one blinking process is active.
+ */
+mutex_t _loc_req_mtx;
 
 static char stack[THREAD_STACKSIZE_DEFAULT];
 
@@ -27,6 +33,10 @@ void* _localization_request_sender(void* args){
 #endif
 		
 	return NULL;
+}
+
+void localization_request_init(void) {
+	mutex_init(&_loc_req_mtx);
 }
 
 void send_localization_request(void){
@@ -55,11 +65,19 @@ void* _localization_request_sender_node(void* args){
 #endif
 
 	resetNodeList();
-		
+	
+	mutex_unlock(&_loc_req_mtx);
+	
 	return NULL;
 }
 
 void send_localization_request_node(void) {
-	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 2, THREAD_CREATE_STACKTEST, 
+	if(mutex_trylock(&_loc_req_mtx) == 1) {
+		thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 2, THREAD_CREATE_STACKTEST, 
 						_localization_request_sender_node, NULL, "localization_request_sender");
+	} else {
+#ifdef HAF_DEBUG
+		printf("LOCALIZATION_REQUEST not ready to be sent.\n");
+#endif
+	}
 }

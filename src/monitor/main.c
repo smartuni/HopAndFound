@@ -7,6 +7,7 @@
 #include "dispatcher.h"
 #include "haf_button.h"
 #include "haf_LED.h"
+#include "localization_request.h"
 #include "heartbeat.h"
 
 int main(void){
@@ -19,6 +20,7 @@ int main(void){
 #ifdef TEST_PRESENTATION
 	init_LED();
 	haf_button_init(haf_button_cb_monitor);
+	localization_request_init();
 #endif
 	udp_server_start((dispatcher_callback_t)dispatch_monitor);
 	heartbeat_sender_start();
