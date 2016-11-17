@@ -19,6 +19,7 @@ int main(void){
 
 	displayInit();
 	printDisplayMap();
+
 	
 	udp_server_start((dispatcher_callback_t)dispatch_monitor);
 		
