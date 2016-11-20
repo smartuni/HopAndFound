@@ -15,11 +15,12 @@
 #include "xtimer.h"
 #include "global.h"
 
-#define SENDER
+//#define SENDER
 
 int main(void){
 #ifndef SENDER
 	uint8_t buf[5];
+#else
 	sock_udp_ep_t local = {	.family = AF_INET6,
 							.port = UDP_RECV_PORT };
 #endif
