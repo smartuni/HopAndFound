@@ -30,10 +30,12 @@ int main(void){
 						.netif = SOCK_ADDR_ANY_NETIF};
 						
 	ipv6_addr_from_str((ipv6_addr_t *)&remote.addr.ipv6, MONITORED_ITEM_IP);
-	
-	puts("Unicast Send Test start!");
 
+#ifdef SENDER
 	sock_udp_create(&sock, &local, &remote, SOCK_FLAGS_REUSE_EP);
+#else
+	sock_udp_create(&sock, &remote, NULL, SOCK_FLAGS_REUSE_EP);
+#endif
 	
 	while(1){
 #ifdef SENDER
