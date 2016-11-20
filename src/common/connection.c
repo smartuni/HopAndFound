@@ -50,7 +50,12 @@ int udp_send(void* p, size_t p_size, sock_udp_ep_t* dst){
 	int res;
 	
 	if (dst != NULL){
+		/*sock_udp_t _sock;
+		sock_udp_create(&_sock, NULL, dst, SOCK_FLAGS_REUSE_EP);
+		res = sock_udp_send(&_sock, p, p_size, NULL);
+		sock_udp_close(&_sock);*/
 		res = sock_udp_send(&sock, p, p_size, dst);
+		printf("SENT %d BYTES\n", res);
 	} else {
 		sock_udp_ep_t remote = {.family = AF_INET6,
 								.port = UDP_RECV_PORT,
