@@ -20,11 +20,11 @@
 int main(void){
 #ifndef SENDER
 	uint8_t buf[5];
-#endif
-	sock_udp_t sock;
 	sock_udp_ep_t local = {	.family = AF_INET6,
 							.port = UDP_RECV_PORT };
-							
+#endif
+						
+	sock_udp_t sock;	
 	sock_udp_ep_t remote = { .family = AF_INET6,
 						.port = UDP_RECV_PORT,
 						.netif = SOCK_ADDR_ANY_NETIF};
