@@ -17,6 +17,9 @@ xtimer_t timer_send;
 
 bool heartbeatActive;
 
+
+ipv6_addr_t d;
+
 bool getHeartbeatActive(void) {
 	return heartbeatActive;
 }
@@ -57,7 +60,7 @@ void _heartbeat_sender_Task(void) {
 #ifdef TEST_PRESENTATION
 	if(heartbeatActive) {
 #endif /* TEST_PRESENTATION */
-    ipv6_addr_t d = IPV6_ADDR_UNSPECIFIED;
+
 	ipv6_addr_from_str(&d, MONITORED_ITEM_IP);
 	
 	heartbeat_t ret_pkg;
