@@ -3,7 +3,6 @@
 #include "board.h"
 #include "periph/gpio.h"
 #include "xtimer.h"
-#include "mutex.h"
 
 #include "global.h"
 #include "haf_LED.h"
@@ -17,10 +16,6 @@
  */
 #define BLINK_FREQ_USEC			250000
 
-/* 
- * Mutex to ensure only one blinking process is active.
- */
-mutex_t mtx;
 /* 
  * Timer for LED toggle.
  */
@@ -61,12 +56,10 @@ void _blink_timer_task(void) {
 		} else if(_led == LED_BLUE) {
 			LED2_OFF;
 		}
-		mutex_unlock(&mtx);
 	}
 }
 
 void init_LED(void) {
-	mutex_init(&mtx);
 	xtimer_init();
     blink_timer.target = 0;
     blink_timer.long_target = 0;
@@ -74,9 +67,7 @@ void init_LED(void) {
 }
 
 void start_LED_blink(led_t led, uint time) {
-	if(mutex_trylock(&mtx) == 1) {
-		_led = led;
-		_time = time;
-		xtimer_set(&blink_timer, BLINK_FREQ_USEC);
-	}
+	_led = led;
+	_time = time;
+	xtimer_set(&blink_timer, BLINK_FREQ_USEC);
 }
