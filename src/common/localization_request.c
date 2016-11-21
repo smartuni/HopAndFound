@@ -1,65 +1,58 @@
 #include "global.h"
 #include "localization_request.h"
-#include "thread.h"
 #include "mutex.h"
 #include "call_for_help.h"
 #include "localization_reply.h"
 #include "xtimer.h"
 #include "console_map.h"
 
-#define REQUEST_SLEEP_TIME (2)
+#define REQUEST_TIME_USEC (2000000)
 
-/* 
- * Mutex to ensure only one blinking process is active.
- */
+xtimer_t _timer;
 mutex_t _loc_req_mtx;
 
-static char stack[THREAD_STACKSIZE_DEFAULT];
-
-void* _localization_request_sender(void* args){	
+void _localization_request_sender(void){	
 	localization_request_t ret_pkg;
 	ret_pkg.type = LOCALIZATION_REQUEST;
 	udp_send(&ret_pkg, sizeof(ret_pkg), NULL);
-
+	
 #ifdef HAF_DEBUG
 	printf("LOCALIZATION_REQUEST sent.\n");
 #endif
-
-	xtimer_sleep(REQUEST_SLEEP_TIME);
 	
-	send_call_for_help();
-#ifdef HAF_DEBUG
-	printf("CALL FOR HELP\n");
-#endif
-		
-	return NULL;
+	xtimer_set(&_timer, REQUEST_TIME_USEC);
 }
 
-void localization_request_init(void) {
+void localization_request_init(localization_request_cb_t cb) {
+	xtimer_init();
+    _timer.target = 0;
+    _timer.long_target = 0;
+    _timer.callback = (void*)cb;
 	mutex_init(&_loc_req_mtx);
-}
-
-void send_localization_request(void){
-	thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 2, THREAD_CREATE_STACKTEST, 
-						_localization_request_sender, NULL, "localization_request_sender");	
-	
 }
 
 void handle_localization_request(ipv6_addr_t* dst){
 	send_localization_reply(dst);
 }
 
-void* _localization_request_sender_node(void* args){	
-	localization_request_t ret_pkg;
-	ret_pkg.type = LOCALIZATION_REQUEST;
-	udp_send(&ret_pkg, sizeof(ret_pkg), NULL);
-	
-#ifdef HAF_DEBUG
-	printf("LOCALIZATION_REQUEST sent.\n");
+void send_localization_request(void) {
+	if(mutex_trylock(&_loc_req_mtx) == 1) {
+		_localization_request_sender();
+	}
+}
+
+void localization_request_cb_monitored_item(void* arg) {
+#ifdef HAF_DEBUG_NODE_MAP
+	printConsoleMap(get_node_list(), MAX_NODES);
 #endif
+	send_call_for_help();
+
+	resetNodeList();
 	
-	xtimer_sleep(REQUEST_SLEEP_TIME);
-	
+	mutex_unlock(&_loc_req_mtx);
+}
+
+void localization_request_cb_node(void* arg) {
 #ifdef HAF_DEBUG_NODE_MAP
 	printConsoleMap(get_node_list(), MAX_NODES);
 #endif
@@ -67,17 +60,4 @@ void* _localization_request_sender_node(void* args){
 	resetNodeList();
 	
 	mutex_unlock(&_loc_req_mtx);
-	
-	return NULL;
-}
-
-void send_localization_request_node(void) {
-	if(mutex_trylock(&_loc_req_mtx) == 1) {
-		thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 2, THREAD_CREATE_STACKTEST, 
-						_localization_request_sender_node, NULL, "localization_request_sender");
-	} else {
-#ifdef HAF_DEBUG
-		printf("LOCALIZATION_REQUEST not ready to be sent.\n");
-#endif
-	}
 }

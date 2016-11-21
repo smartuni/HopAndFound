@@ -20,7 +20,6 @@ int main(void){
 #ifdef TEST_PRESENTATION
 	init_LED();
 	haf_button_init(haf_button_cb_monitor);
-	localization_request_init();
 #endif
 	udp_server_start((dispatcher_callback_t)dispatch_monitor);
 	heartbeat_sender_start();

@@ -19,7 +19,7 @@ int main(void){
 #ifdef TEST_PRESENTATION
 	init_LED();
 	haf_button_init(haf_button_cb_node);
-	localization_request_init();
+	localization_request_init(localization_request_cb_node);
 #endif
 	udp_server_start((dispatcher_callback_t)dispatch_node);
 	

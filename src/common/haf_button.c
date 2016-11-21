@@ -21,7 +21,7 @@ void _debounce_cb(void) {
 void haf_button_cb_node(void *arg) {
 	if(_debounced) {
 		_debounced = false;
-		send_localization_request_node();
+		send_localization_request();
 		xtimer_set(&_timer_debounce, DEBOUNCE_TIME_USEC);
 	}
 }

@@ -4,9 +4,12 @@
 #include "HAF_protocol.h"
 #include "connection.h"
 
-void localization_request_init(void);
+typedef void (*localization_request_cb_t)(void* arg);
+
+void localization_request_init(localization_request_cb_t cb);
 void handle_localization_request(ipv6_addr_t* dst);
 void send_localization_request(void);
-void send_localization_request_node(void);
+void localization_request_cb_monitored_item(void* arg);
+void localization_request_cb_node(void* arg);
 
 #endif
