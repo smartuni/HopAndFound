@@ -55,9 +55,14 @@ void* _udp_server(void *args) {
 			ipv6_addr_to_str(src_str, &src, IPV6_ADDR_MAX_STR_LEN);			
 			
 			if (strcmp(last_src, src_str) == 0 && xtimer_now() - last_src_rcv_time < RECV_DROP_DIFF_TIME){
+#ifdef HAF_DEBUG
+				printf("PACKET DROPPED FROM UDP SERVER\n");
+#endif
 				continue;
 			}
-			
+#ifdef HAF_DEBUG		
+			printf("RECEIVED UDP PKG FROM %s\n", src_str);
+#endif
             cb(recv_buffer, &src);
             last_src_rcv_time = xtimer_now();
             memcpy(&last_src, &src_str, sizeof(src_str));
@@ -71,16 +76,25 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 	int res;
     ipv6_addr_t src = IPV6_ADDR_UNSPECIFIED;
     ipv6_addr_t d = IPV6_ADDR_UNSPECIFIED;
+#ifdef HAF_DEBUG
+	char src_str[IPV6_ADDR_MAX_STR_LEN];
+#endif
     
     if (dst != NULL){
-		d = *dst;
+		memcpy(&d, dst, sizeof(*dst));
+	}else{    
+		if (ipv6_addr_from_str(&d, UDP_MULTICAST_ADDRESS) == NULL) {
+			return -1;
+		}
 	}
     
-    if (ipv6_addr_from_str(&d, UDP_MULTICAST_ADDRESS) == NULL) {
-        return -1;
-    }
-    
     xtimer_usleep(NODE_ID * SEND_SLEEP_TIMER);
+    
+#ifdef HAF_DEBUG
+    ipv6_addr_to_str(src_str, &d, IPV6_ADDR_MAX_STR_LEN);
+    printf("SEND UDP PKG TO %s\n", src_str);
+#endif
+    
     res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
     
     return res;
