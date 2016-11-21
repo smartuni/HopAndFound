@@ -15,7 +15,7 @@
 #include "xtimer.h"
 #include "global.h"
 
-//#define SENDER
+#define SENDER
 
 int main(void){
 #ifndef SENDER
@@ -33,7 +33,7 @@ int main(void){
 	ipv6_addr_from_str((ipv6_addr_t *)&remote.addr.ipv6, MONITORED_ITEM_IP);
 
 #ifdef SENDER
-	sock_udp_create(&sock, &local, &remote, SOCK_FLAGS_REUSE_EP);
+	conn_udp_create(&conn, &server_addr, sizeof(server_addr), AF_INET6, port);
 #else
 	sock_udp_create(&sock, &remote, NULL, SOCK_FLAGS_REUSE_EP);
 #endif

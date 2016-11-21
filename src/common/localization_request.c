@@ -30,6 +30,6 @@ void send_localization_request(void){
 	
 }
 
-void handle_localization_request(sock_udp_ep_t* dst){
+void handle_localization_request(ipv6_addr_t* dst){
 	send_localization_reply(dst);
 }

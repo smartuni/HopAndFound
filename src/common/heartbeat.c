@@ -42,11 +42,8 @@ void handle_heartbeat(void) {
 }
 
 void _heartbeat_sender_Task(void) {	
-    sock_udp_ep_t d = { .family = AF_INET6,
-						.port = UDP_RECV_PORT,
-						.netif = SOCK_ADDR_ANY_NETIF};
-						
-	ipv6_addr_from_str((ipv6_addr_t *)&d.addr.ipv6, MONITORED_ITEM_IP);
+    ipv6_addr_t d = IPV6_ADDR_UNSPECIFIED;
+	ipv6_addr_from_str(&d, MONITORED_ITEM_IP);
 	
 	heartbeat_t ret_pkg;
 	ret_pkg.type = HEARTBEAT;
