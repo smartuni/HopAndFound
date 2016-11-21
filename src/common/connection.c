@@ -13,6 +13,9 @@
 #define SERVER_MSG_QUEUE_SIZE   (16)
 #define MAX_RECV_BUFFER_SIZE	(sizeof(call_for_help_t))
 
+#define SEND_SLEEP_TIMER		(100000)
+#define RECV_DROP_DIFF_TIME		(SEND_SLEEP_TIMER/2)
+
 
 static char stack[THREAD_STACKSIZE_DEFAULT];
 static kernel_pid_t netif_dev = -1;
@@ -32,9 +35,13 @@ void* _udp_server(void *args) {
 		// TODO error handling
     }
 
+	uint32_t last_src_rcv_time = 0;
+	char src_str[IPV6_ADDR_MAX_STR_LEN];
+	char last_src[IPV6_ADDR_MAX_STR_LEN];
     while (1) {
         int res;
         ipv6_addr_t src;
+        
         size_t src_len = sizeof(ipv6_addr_t);
 		memset(recv_buffer, 0, sizeof(recv_buffer));
         if((res = conn_udp_recvfrom(&conn, &recv_buffer, sizeof(recv_buffer),
@@ -45,7 +52,15 @@ void* _udp_server(void *args) {
             puts("No data received\n");
             // TODO error handling
         } else {
+			ipv6_addr_to_str(src_str, &src, IPV6_ADDR_MAX_STR_LEN);			
+			
+			if (strcmp(last_src, src_str) == 0 && xtimer_now() - last_src_rcv_time < RECV_DROP_DIFF_TIME){
+				continue;
+			}
+			
             cb(recv_buffer, &src);
+            last_src_rcv_time = xtimer_now();
+            memcpy(&last_src, &src_str, sizeof(src_str));
         }
     }
 }
@@ -65,7 +80,7 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
         return -1;
     }
     
-    xtimer_usleep(NODE_ID*100000);
+    xtimer_usleep(NODE_ID * SEND_SLEEP_TIMER);
     res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
     
     return res;
