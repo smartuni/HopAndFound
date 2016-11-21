@@ -2,11 +2,29 @@
 #include <string.h>
 #include "global.h"
 #include "call_for_help.h"
+#include "display.h"
 #include "console_map.h"
 #include "localization_reply.h"
+#include "xtimer.h"
+
+#define CALL_FOR_HELP_TIME_USEC		(2000000)
 
 static int seq_nr_send = 1;
 static int seq_nr_recv = 0;
+
+xtimer_t _timer;
+
+void _call_for_help_handler_task(void) {
+	printDisplayHopAndFound();
+}
+
+void call_for_help_handler_init(void) {
+	xtimer_init();
+    _timer.target = 0;
+    _timer.long_target = 0;
+    _timer.callback = (void*)_call_for_help_handler_task;
+	xtimer_set(&_timer, CALL_FOR_HELP_TIME_USEC);
+}
 
 void send_call_for_help(void) {
 	call_for_help_t pkg;
@@ -47,6 +65,9 @@ void handle_call_for_help(call_for_help_t* p, handler_t h) {
 		forward_call_for_help(p);
 	} else if ( h == MONITOR ) {
 		if ( p->mi_id == MONITORED_ITEM_ID ) {
+			//TODO updateMap(); + Timer (when timerinterrupt -> resetMap)
+			printDisplayMapString(p->node_list);
+		    xtimer_set(&_timer, CALL_FOR_HELP_TIME_USEC);
 #ifdef HAF_DEBUG_DONT_PRINT_EMPTY_MAP
 			int i;
 			

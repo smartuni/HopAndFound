@@ -8,17 +8,17 @@
 #define CHAR_WIDTH          (6U)
 #define ROW_AMOUNT 			(3)
 #define MAP_SIZE			(9*ROW_AMOUNT*5)      
-#define MAP_X_OFFSET		20
-#define MAP_Y_OFFSET		2
+#define MAP_X_OFFSET		(4)
+#define MAP_Y_OFFSET		(1)
 
-#define DEVICE_X_OFFSET		1
-#define DEVICE_Y_OFFSET		ROW_AMOUNT+MAP_Y_OFFSET
+#define DEVICE_X_OFFSET		(1)
+#define DEVICE_Y_OFFSET		(ROW_AMOUNT+MAP_Y_OFFSET+1)
 
 static pcd8544_t dev;
 
-static const char map[MAP_SIZE] = {
+static const char map_node[MAP_SIZE] = {
 	//first row 1---2---3
-    0x3e, 0x51, 0x49, 0x45, 0x3e,
+#define DISPLAY_NODE_1    0x3e, 0x51, 0x49, 0x45, 0x3e,
 	0x08, 0x08, 0x08, 0x08, 0x08,
 	0x08, 0x08, 0x08, 0x08, 0x08,
 	0x08, 0x08, 0x08, 0x08, 0x08,
@@ -50,6 +50,41 @@ static const char map[MAP_SIZE] = {
 	0x27, 0x45, 0x45, 0x45, 0x39,
 };
 
+static const char map[MAP_SIZE] = {
+	//first row X---X---X
+    0x63, 0x14, 0x08, 0x14, 0x63,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x63, 0x14, 0x08, 0x14, 0x63,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x63, 0x14, 0x08, 0x14, 0x63,
+	//second row |       |
+	
+	0x00, 0x00, 0x7f, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x7f, 0x00, 0x00,
+
+	//third row X---X---X
+    0x63, 0x14, 0x08, 0x14, 0x63,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x63, 0x14, 0x08, 0x14, 0x63,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x08, 0x08, 0x08, 0x08, 0x08,
+	0x63, 0x14, 0x08, 0x14, 0x63,
+};
+
 static void _write(pcd8544_t *dev, uint8_t is_data, char data)
 {
     /* set command or data mode */
@@ -73,16 +108,20 @@ static inline void _set_y(pcd8544_t *dev, uint8_t y)
 }
 
 void printMonitoredItemLost(void){   
-	pcd8544_write_s(&dev,0,DEVICE_Y_OFFSET,"Device lost!");
+	pcd8544_write_s(&dev,DEVICE_X_OFFSET,DEVICE_Y_OFFSET,"Device lost!");
 }
 
 void printMonitoredItemInRange(void){   
 	pcd8544_write_s(&dev,DEVICE_X_OFFSET,DEVICE_Y_OFFSET,"Device in range!");
 }
 
+void printDisplayHopAndFound(void){
+	 pcd8544_write_s(&dev,0,1,"Hop And Found");
+     pcd8544_write_s(&dev,3,3,"active!");  
+}
+
 void printDisplayMap(void){
-   pcd8544_write_s(&dev,0,0,"Hop And Found");
-   
+   pcd8544_clear(&dev);
    _set_y(&dev, MAP_Y_OFFSET);
    _set_x(&dev, MAP_X_OFFSET);
    for(int y=0; y < ROW_AMOUNT ; y++){
@@ -92,6 +131,39 @@ void printDisplayMap(void){
 	_set_y(&dev, y+1+MAP_Y_OFFSET);
 	_set_x(&dev, MAP_X_OFFSET);
    }
+   printMonitoredItemLost();
+}
+
+
+void printDisplayMapString(uint8_t* nodes){
+   pcd8544_clear(&dev);
+
+   char row1[8]="X--X--X";
+   char row3[8]="X--X--X";
+   
+   if(nodes[0]==1){
+	  row1[0]='0';
+   }
+   if(nodes[1]==1){
+	  row1[3]='1';
+   }
+   if(nodes[2]==1){
+	  row1[6]='2';
+   }
+   if(nodes[3]==1){
+	  row3[0]='3';
+   }
+   if(nodes[4]==1){
+	  row3[3]='4';
+   }   
+   if(nodes[5]==1){
+	  row3[6]='5';
+   }
+   
+   pcd8544_write_s(&dev,MAP_X_OFFSET,MAP_Y_OFFSET,row1);
+   pcd8544_write_s(&dev,MAP_X_OFFSET,MAP_Y_OFFSET+1,"|     |");
+   pcd8544_write_s(&dev,MAP_X_OFFSET,MAP_Y_OFFSET+2,row3);
+   
    printMonitoredItemLost();
 }
 

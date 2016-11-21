@@ -7,6 +7,8 @@
 #include "pcd8544_internal.h"
 
 void printDisplayMap(void);
+void printDisplayMapString(uint8_t* nodes);
+void printDisplayHopAndFound(void);
 void displayInit(void);
 
 

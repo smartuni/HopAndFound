@@ -4,6 +4,7 @@
 #include "connection.h"
 #include "dispatcher.h"
 #include "heartbeat.h"
+#include "call_for_help.h"
 #include "xtimer.h"
 #include "global.h"
 #include "display.h"
@@ -17,9 +18,9 @@ int main(void){
 	
 	puts("Monitor start!");
 
+	call_for_help_handler_init();
 	displayInit();
-	printDisplayMap();
-
+	printDisplayHopAndFound();
 	
 	udp_server_start((dispatcher_callback_t)dispatch_monitor);
 		
