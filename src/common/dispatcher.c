@@ -112,6 +112,13 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			printf("type: %u\n", localization_reply.type);
 			printf("node_id: %u\n", localization_reply.node_id);
 #endif /* HAF_DEBUG_DISPATCH */
+			uint8_t* node_list = get_node_list();
+			if (node_list[localization_reply.node_id] == 1){
+#ifdef HAF_DEBUG_DISPATCH
+			printf("DROPPED\n");
+#endif
+				break;
+			}
 			
 			handle_localization_reply(&localization_reply);
 			
