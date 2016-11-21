@@ -27,7 +27,8 @@ int main(void){
 	init_LED();
 	haf_button_init(haf_button_cb_monitor);
 #endif
-	udp_server_start((dispatcher_callback_t)dispatch_monitor);
 	heartbeat_sender_start();
+	udp_server_start((dispatcher_callback_t)dispatch_monitor);
+	
 	return 0;
 }

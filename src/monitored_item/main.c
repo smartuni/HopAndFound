@@ -22,8 +22,8 @@ int main(void){
 	haf_button_init(haf_button_cb_monitored_item);
 	localization_request_init(localization_request_cb_monitored_item);
 #endif
-	udp_server_start((dispatcher_callback_t)dispatch_monitored_item);
 	heartbeat_handler_init();
+	udp_server_start((dispatcher_callback_t)dispatch_monitored_item);
 	
 	return 0;
 }

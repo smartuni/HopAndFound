@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "thread.h"
 #include "connection.h"
 #include "HAF_protocol.h"
 #include "xtimer.h"
@@ -17,13 +16,11 @@
 #define RECV_DROP_DIFF_TIME		(SEND_SLEEP_TIMER/2)
 
 
-static char stack[THREAD_STACKSIZE_DEFAULT];
 static kernel_pid_t netif_dev = -1;
 
 
-void* _udp_server(void *args) {
+int udp_server_start(dispatcher_callback_t cb) {
 	uint16_t port = UDP_RECV_PORT;
-	dispatcher_callback_t cb = (dispatcher_callback_t) args;
     conn_udp_t conn;
 	uint8_t recv_buffer[MAX_RECV_BUFFER_SIZE];
     ipv6_addr_t server_addr = IPV6_ADDR_UNSPECIFIED;
@@ -98,16 +95,6 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
     res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
     
     return res;
-}
-
-int udp_server_start(dispatcher_callback_t cb){
-    if (thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1,
-                      THREAD_CREATE_STACKTEST, _udp_server, cb, "HopAndFound UDP Server")
-        <= KERNEL_PID_UNDEF) {
-        return -1;
-    }
-
-    return 0;
 }
 
 kernel_pid_t _get_netif(void){
