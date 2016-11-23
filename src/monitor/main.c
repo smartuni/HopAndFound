@@ -19,7 +19,6 @@ int main(void){
 	
 	call_for_help_handler_init();
 	displayInit();	
-	printDisplayHopAndFound();
 #ifdef HAF_DEBUG
 	puts("Monitor start!");
 #endif
@@ -27,6 +26,7 @@ int main(void){
 	init_LED();
 	haf_button_init(haf_button_cb_monitor);
 #endif
+	printDisplayHopAndFound();
 	heartbeat_sender_start();
 	udp_server_start((dispatcher_callback_t)dispatch_monitor);
 	
