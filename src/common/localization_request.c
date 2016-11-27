@@ -46,7 +46,6 @@ void _localization_request_handler(void){
 }
 
 void localization_request_init(localization_request_cb_t cb) {
-	xtimer_init();
     _timer_localization_request.target = 0;
     _timer_localization_request.long_target = 0;
     _timer_localization_request.callback = (void*) _localization_request_handler;

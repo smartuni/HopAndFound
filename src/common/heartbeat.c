@@ -19,7 +19,7 @@
 //Priority of thread for sending heartbeats
 #define HEARTBEAT_SEND_THREAD_PRIORITY THREAD_PRIORITY_MAIN + 1
 //Priority of thread for handling heartbeat timeouts
-#define HEARTBEAT_TIMEOUT_THREAD_PRIORITY THREAD_PRIORITY_MAIN + 2
+#define HEARTBEAT_TIMEOUT_THREAD_PRIORITY THREAD_PRIORITY_MAIN + 1
 
 
 //Timer to receive determine heartbeat timeouts
@@ -71,7 +71,6 @@ void _heartbeat_timeout_handler(void){
 }
 
 void heartbeat_timeout_init(void) {
-	xtimer_init();
     timer_recv.target = 0;
     timer_recv.long_target = 0;
     timer_recv.callback = (void*) _heartbeat_timeout_handler;
@@ -88,7 +87,7 @@ void handle_heartbeat(void) {
  * HEARTBEAT SENDER (MONITOR)
  */
 
-void _heartbeat_send_task(void) {	
+void _heartbeat_send_task(void) {
 #ifdef TEST_PRESENTATION
 	if(heartbeatActive) {
 #endif /* TEST_PRESENTATION */
@@ -119,7 +118,6 @@ void _heartbeat_send_handler(void){
 
 void heartbeat_sender_init(void) {
 	heartbeatActive = true;
-	xtimer_init();
     timer_send.target = 0;
     timer_send.long_target = 0;
     timer_send.callback = (void*) _heartbeat_send_handler;

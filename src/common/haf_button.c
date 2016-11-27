@@ -49,7 +49,6 @@ void haf_button_cb_monitored_item(void *arg) {
 }
 
 int haf_button_init(haf_button_cb_t cb) {
-	xtimer_init();
     _timer_debounce.target = 0;
     _timer_debounce.long_target = 0;
     _timer_debounce.callback = (void*)_debounce_cb;

@@ -60,7 +60,6 @@ void _blink_timer_task(void) {
 }
 
 void init_LED(void) {
-	xtimer_init();
     blink_timer.target = 0;
     blink_timer.long_target = 0;
     blink_timer.callback = (void*)_blink_timer_task;

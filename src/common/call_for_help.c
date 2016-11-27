@@ -19,7 +19,6 @@ void _call_for_help_handler_task(void) {
 }
 
 void call_for_help_handler_init(void) {
-	xtimer_init();
     _timer_call_for_help.target = 0;
     _timer_call_for_help.long_target = 0;
     _timer_call_for_help.callback = (void*)_call_for_help_handler_task;
