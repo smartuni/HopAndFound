@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "thread.h"
 #include "connection.h"
 #include "HAF_protocol.h"
 #include "xtimer.h"
@@ -13,15 +12,16 @@
 #define SERVER_MSG_QUEUE_SIZE   (8)
 #define MAX_RECV_BUFFER_SIZE	(sizeof(call_for_help_t))
 
+#define SEND_SLEEP_TIMER		(100000)
+#define RECV_DROP_DIFF_TIME		(SEND_SLEEP_TIMER/2)
 
-static char stack[THREAD_STACKSIZE_DEFAULT];
+
 static kernel_pid_t netif_dev = -1;
 
 
-void* _udp_server(void *args) {
+int udp_server_start(dispatcher_callback_t cb) {
 	uint16_t port = UDP_RECV_PORT;
-	dispatcher_callback_t cb = (dispatcher_callback_t) args;
-	conn_udp_t conn;
+    conn_udp_t conn;
 	uint8_t recv_buffer[MAX_RECV_BUFFER_SIZE];
 	ipv6_addr_t server_addr = IPV6_ADDR_UNSPECIFIED;
 	msg_t server_msg_queue[SERVER_MSG_QUEUE_SIZE];
@@ -32,52 +32,70 @@ void* _udp_server(void *args) {
 		// TODO error handling
 	}
 
-	while (1) {
-		int res;
-		ipv6_addr_t src;
-		size_t src_len = sizeof(ipv6_addr_t);
+	uint32_t last_src_rcv_time = 0;
+	char src_str[IPV6_ADDR_MAX_STR_LEN];
+	char last_src[IPV6_ADDR_MAX_STR_LEN];
+    while (1) {
+        int res;
+        ipv6_addr_t src;
+        
+        size_t src_len = sizeof(ipv6_addr_t);
 		memset(recv_buffer, 0, sizeof(recv_buffer));
 		if((res = conn_udp_recvfrom(&conn, &recv_buffer, sizeof(recv_buffer),
 									&src, &src_len, &port)) < 0) {
 			puts("Error while receiving\n");			
 			// TODO error handling
-		} else if(res == 0) {
-			puts("No data received\n");
-			// TODO error handling
-		} else {
-			cb(recv_buffer, &src);
-		}
-	}
+        } else if(res == 0) {
+            puts("No data received\n");
+            // TODO error handling
+        } else {
+			ipv6_addr_to_str(src_str, &src, IPV6_ADDR_MAX_STR_LEN);			
+			
+			if (strcmp(last_src, src_str) == 0 && xtimer_now() - last_src_rcv_time < RECV_DROP_DIFF_TIME){
+#ifdef HAF_DEBUG
+				printf("PACKET DROPPED FROM UDP SERVER\n");
+#endif
+				continue;
+			}
+#ifdef HAF_DEBUG		
+			printf("RECEIVED UDP PKG FROM %s\n", src_str);
+#endif
+            cb(recv_buffer, &src);
+            last_src_rcv_time = xtimer_now();
+            memcpy(&last_src, &src_str, sizeof(src_str));
+        }
+    }
 }
 
 
 
 int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 	int res;
-	ipv6_addr_t src = IPV6_ADDR_UNSPECIFIED;
-	ipv6_addr_t d = IPV6_ADDR_UNSPECIFIED;
-	
-	if (dst != NULL){
+    ipv6_addr_t src = IPV6_ADDR_UNSPECIFIED;
+    ipv6_addr_t d = IPV6_ADDR_UNSPECIFIED;
+#ifdef HAF_DEBUG
+	char src_str[IPV6_ADDR_MAX_STR_LEN];
+#endif
+    
+    if (dst != NULL){
+		//memcpy(&d, dst, sizeof(*dst));
 		d = *dst;
+	}else{    
+		if (ipv6_addr_from_str(&d, UDP_MULTICAST_ADDRESS) == NULL) {
+			return -1;
+		}
 	}
-	
-	if (ipv6_addr_from_str(&d, UDP_MULTICAST_ADDRESS) == NULL) {
-		return -1;
-	}
-	
-	res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
-	
-	return res;
-}
-
-int udp_server_start(dispatcher_callback_t cb){
-	if (thread_create(stack, THREAD_STACKSIZE_DEFAULT, THREAD_PRIORITY_MAIN - 1,
-					  THREAD_CREATE_STACKTEST, _udp_server, cb, "HopAndFound UDP Server")
-		<= KERNEL_PID_UNDEF) {
-		return -1;
-	}
-
-	return 0;
+    
+    xtimer_usleep(NODE_ID * SEND_SLEEP_TIMER);
+    
+#ifdef HAF_DEBUG
+    ipv6_addr_to_str(src_str, &d, IPV6_ADDR_MAX_STR_LEN);
+    printf("SEND UDP PKG TO %s\n", src_str);
+#endif
+    
+    res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
+    
+    return res;
 }
 
 kernel_pid_t _get_netif(void){

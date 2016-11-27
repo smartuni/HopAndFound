@@ -1,7 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#define NODE_ID (0)
+#define NODE_ID (1)
 #define MONITORED_ITEM_ID (1)
 #define MAX_NODES (6)
 
@@ -19,6 +19,8 @@
 #define HAF_DEBUG
 #define HAF_DEBUG_NODE_MAP
 #define HAF_DEBUG_DISPATCH
-//#define HAF_DEBUG_DONT_PRINT_EMPTY_MAP
+#define HAF_DEBUG_DONT_PRINT_EMPTY_MAP
+
+#define TEST_PRESENTATION
 
 #endif /* GLOBAL_H */
