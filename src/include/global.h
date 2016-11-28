@@ -1,8 +1,8 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#define NODE_ID (1)
-#define DEV_MAC_ADR (1)
+#define NODE_ID (4)
+#define DEV_MAC_ADR (4)
 
 
 #define MONITORED_ITEM_ID (3)
