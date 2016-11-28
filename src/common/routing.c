@@ -11,34 +11,18 @@
 #define TIMEOUT 9000000 //10sek.
 #define EXP_TIMEOUT 30000000 //60sek.
 
+//Priority of thread for handling task after waiting period for
+//localization_replies ran out
+#define ROUTING_THREAD_PRIORITY THREAD_PRIORITY_MAIN + 2
+
+//Stack for thread to handle task after _timer_localization_request interrupts	
+char routing_stack[THREAD_STACKSIZE_MAIN];
+
+
 xtimer_t timer_update;
 
 routing_tbl_t routing_tbl[MAX_DEVICES];
 
-
-void init(void) { //muss in der main aufgerufen werden
-	xtimer_init();
-    timer_update.target = 0;
-    timer_update.long_target = 0;
-	timer_update.callback = (void*)_update;
-	xtimer_set(&timer_update, TIMEOUT);
-	routing_tbl[0].mac_adr = DEV_MAC_ADR; //DEVICE MAC ADRESS
-	routing_tbl[0].hops = 0;
-	routing_tbl[0].next_hop_adr = 0;
-	routing_tbl[0].exp_time = 0;
-	for (int i=1;i<MAX_DEVICES;i++) {
-		routing_tbl[i].mac_adr = 0;
-		routing_tbl[i].hops = 0;
-		routing_tbl[i].next_hop_adr = 0;
-		routing_tbl[i].exp_time = 0;
-	}
-	//routing_tbl[1].exp_time = ( xtimer_now() + EXP_TIMEOUT );
-	//routing_tbl[2].exp_time = ( xtimer_now() + EXP_TIMEOUT );
-	//routing_tbl[3].exp_time = ( xtimer_now() + EXP_TIMEOUT );
-	
-	puts("Init complete - start sending");
-	_update();
-}
 
 void _update(void){
 	printf("update funktion gestartet\n");
@@ -63,6 +47,35 @@ void _update(void){
 		printf("routing_tbl[%d].exp_time: %" PRIu32 "\n", i, pkg.routing_tbl[i].exp_time);
 	}
 	udp_send(&pkg, sizeof(pkg), NULL);
+}
+
+void _routing_handler(void){
+	thread_create(routing_stack, sizeof(routing_stack),
+			ROUTING_THREAD_PRIORITY, THREAD_CREATE_STACKTEST,
+			(void *) _update, NULL, "routing_callback");
+}
+
+void init(void) { //muss in der main aufgerufen werden
+    timer_update.target = 0;
+    timer_update.long_target = 0;
+	timer_update.callback = (void*) _routing_handler;
+	xtimer_set(&timer_update, TIMEOUT);
+	routing_tbl[0].mac_adr = DEV_MAC_ADR; //DEVICE MAC ADRESS
+	routing_tbl[0].hops = 0;
+	routing_tbl[0].next_hop_adr = 0;
+	routing_tbl[0].exp_time = 0;
+	for (int i=1;i<MAX_DEVICES;i++) {
+		routing_tbl[i].mac_adr = 0;
+		routing_tbl[i].hops = 0;
+		routing_tbl[i].next_hop_adr = 0;
+		routing_tbl[i].exp_time = 0;
+	}
+	//routing_tbl[1].exp_time = ( xtimer_now() + EXP_TIMEOUT );
+	//routing_tbl[2].exp_time = ( xtimer_now() + EXP_TIMEOUT );
+	//routing_tbl[3].exp_time = ( xtimer_now() + EXP_TIMEOUT );
+	
+	puts("Init complete - start sending");
+	_update();
 }
 
 void handle_update(update_t* p, uint32_t source_adr){
