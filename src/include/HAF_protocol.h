@@ -12,20 +12,20 @@ typedef enum pkg_type{
 	CALL_FOR_HELP
 } pkg_type_t;
 
-typedef struct heartbeat{//__attribute__((packed)) {
+typedef struct __attribute__((packed)) {
 	uint8_t type;
 } heartbeat_t;
 
-typedef struct localization_request{//__attribute__((packed)) {
+typedef struct __attribute__((packed)) {
 	uint8_t type;
 } localization_request_t;
 
-typedef struct localization_reply{//__attribute__((packed)) {
+typedef struct __attribute__((packed)) {
 	uint8_t type;
 	uint8_t node_id;
 } localization_reply_t;
 
-typedef struct call_for_help{//__attribute__((packed)) {
+typedef struct __attribute__((packed)) {
 	uint8_t type;
 	uint32_t seq_nr;
 	uint8_t mi_id;
