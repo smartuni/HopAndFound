@@ -9,15 +9,15 @@
 #define INACTIVE_NODE_CHARACTER ('X')
 #define ACTIVE_NODE_CHARACTER ('O')
 
-/*static char* map_template = "\
+static char* map_template = "\
 		\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m\n\
 		|                       |\n\
 		|                       |\n\
 		|                       |\n\
 		\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m\n";
-*/
+
 		
-static char* map_template = "\
+/*static char* map_template = "\
 		\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m\n\
 		|           |\n\
 		|           |\n\
@@ -26,7 +26,7 @@ static char* map_template = "\
 		|           |\n\
 		|           |\n\
 		|           |\n\
-		\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m\n";
+		\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m\n";*/
 
 
 void generateAndPrintRandomMaps(void){
