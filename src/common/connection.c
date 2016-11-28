@@ -6,7 +6,7 @@
 #include "HAF_protocol.h"
 #include "xtimer.h"
 #include "global.h"
-
+#include <net/gnrc/ipv6/netif.h>
 
 
 #define SERVER_MSG_QUEUE_SIZE   (8)
@@ -94,6 +94,11 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 #endif
     
     res = conn_udp_sendto(p, p_size, &src, sizeof(src), &d, sizeof(*dst), AF_INET6, UDP_SRC_PORT, UDP_RECV_PORT);
+
+#ifdef HAF_DEBUG    
+    if (res < 0)
+		printf("UDP SEND ERROR %d\n", res);
+#endif
     
     return res;
 }
@@ -141,4 +146,14 @@ int set_netif(netif_mode_t mode, int16_t val){
 	}
 	
 	return res < 0 ? res : 0;
+}
+
+ipv6_addr_t* get_ipv6_addr(void){
+	kernel_pid_t dev = _get_netif();
+	gnrc_ipv6_netif_t *entry = gnrc_ipv6_netif_get(dev);
+    ipv6_addr_t* addr = (ipv6_addr_t*) malloc(sizeof(ipv6_addr_t));
+    
+    memcpy(addr, &entry->addrs[1].addr, sizeof(ipv6_addr_t));
+    
+    return addr;
 }
