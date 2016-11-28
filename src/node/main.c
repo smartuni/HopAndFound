@@ -16,14 +16,6 @@ int main(void){
 	
 #ifdef HAF_DEBUG
 	printf("Node start! ID: %d\n", NODE_ID);
-
-
-	/*ipv6_addr_t *addr = get_ipv6_addr();
-    char ipv6_addr[IPV6_ADDR_MAX_STR_LEN];
-	
-	ipv6_addr_to_str(ipv6_addr, addr, IPV6_ADDR_MAX_STR_LEN);
-	
-	printf("ipv6_addr = %s\n", ipv6_addr);*/
 #endif
 
 	xtimer_init();

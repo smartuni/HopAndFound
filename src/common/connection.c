@@ -151,17 +151,9 @@ int set_netif(netif_mode_t mode, int16_t val){
 ipv6_addr_t* get_ipv6_addr(void){
 	kernel_pid_t dev = _get_netif();
 	gnrc_ipv6_netif_t *entry = gnrc_ipv6_netif_get(dev);
-	
-	for (int i = 0; i < GNRC_IPV6_NETIF_ADDR_NUMOF; i++){
-		if (!(ipv6_addr_is_unspecified(&entry->addrs[i].addr) 
-			|| ipv6_addr_is_link_local(&entry->addrs[i].addr))) {
-			ipv6_addr_t* addr = (ipv6_addr_t*) malloc(sizeof(ipv6_addr_t));
+    ipv6_addr_t* addr = (ipv6_addr_t*) malloc(sizeof(ipv6_addr_t));
     
-			memcpy(addr, &entry->addrs[0].addr, sizeof(ipv6_addr_t));
-			
-			return addr;
-		}
-	}
-	
-    return NULL;
+    memcpy(addr, &entry->addrs[1].addr, sizeof(ipv6_addr_t));
+    
+    return addr;
 }
