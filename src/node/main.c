@@ -5,6 +5,7 @@
 #include "xtimer.h"
 #include "dispatcher.h"
 #include "global.h"
+#include "routing.h"
 
 int main(void){
 	
@@ -13,8 +14,9 @@ int main(void){
 	set_netif(CHANNEL, NETIF_CHANNEL);
 	
 	puts("Node start!");
-
+	
 	udp_server_start((dispatcher_callback_t)dispatch_node);
+	init();
 	
 	return 0;
 }

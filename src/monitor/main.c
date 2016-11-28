@@ -6,6 +6,7 @@
 #include "heartbeat.h"
 #include "xtimer.h"
 #include "global.h"
+#include "routing.h"
 
 int main(void){
 	
@@ -16,7 +17,7 @@ int main(void){
 	puts("Monitor start!");
 
 	udp_server_start((dispatcher_callback_t)dispatch_monitor);
-		
+	init();
 	heartbeat_sender_start();
 	
 	return 0;

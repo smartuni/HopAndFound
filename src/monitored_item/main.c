@@ -6,6 +6,7 @@
 #include "dispatcher.h"
 #include "heartbeat.h"
 #include "global.h"
+#include "routing.h"
 
 #include "call_for_help.h" 
 
@@ -19,7 +20,6 @@ int main(void){
 	puts("Monitored Item start!");
 
 	udp_server_start((dispatcher_callback_t)dispatch_monitored_item);
-	
 	heartbeat_handler_init();
 	
 	return 0;

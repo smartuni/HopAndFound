@@ -1,17 +1,23 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#define NODE_ID (0)
-#define MONITORED_ITEM_ID (1)
+#define NODE_ID (1)
+#define DEV_MAC_ADR (1)
+
+
+#define MONITORED_ITEM_ID (3)
+#define MONITOR_ID (2)
 #define MAX_NODES (6)
+#define MAX_DEVICES (8)
+
 
 #define MONITORED_ITEM_IP ("FF80::F8E3:4E62:71BA:600A")
 
-#define SIGNAL_STRENGTH_MONITOR (-35)
+#define SIGNAL_STRENGTH_MONITOR (-21) //vorher -35
 #define SIGNAL_STRENGTH_MONITORED_ITEM (-21)
 #define SIGNAL_STRENGTH_NODE (-21)
 
-#define NETIF_CHANNEL (11)
+#define NETIF_CHANNEL (10)
 
 #define STARTUP_SLEEPTIME_SEC (1)
 
