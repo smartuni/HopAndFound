@@ -7,7 +7,7 @@
 #include "xtimer.h"
 #include "display.h"
 
-#define CALL_FOR_HELP_TIME_USEC		(2000000)
+#define CALL_FOR_HELP_TIME_USEC		(15000000)
 
 static int seq_nr_send = 1;
 static int seq_nr_recv = 0;
@@ -67,7 +67,8 @@ void handle_call_for_help(call_for_help_t* p, handler_t h) {
 		forward_call_for_help(p);
 	} else if ( h == MONITOR ) {
 		if ( p->mi_id == MONITORED_ITEM_ID ) {
-			printDisplayMapString(p->node_list);
+			//printDisplayMapString(p->node_list);
+			printDisplayMapStringPath(p->node_list,p->node_list_path);
 		    xtimer_set(&_timer_call_for_help, CALL_FOR_HELP_TIME_USEC);
 #ifdef HAF_DEBUG_DONT_PRINT_EMPTY_MAP
 			int i;

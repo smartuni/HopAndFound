@@ -8,6 +8,7 @@
 
 void printDisplayMap(void);
 void printDisplayMapString(uint8_t* nodes);
+void printDisplayMapStringPath(uint8_t* nodes,uint8_t* node_list_path);
 void printDisplayHopAndFound(void);
 void displayInit(void);
 
