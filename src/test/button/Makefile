@@ -1,34 +1,20 @@
 # name of your application
-APPLICATION = HopAndFound_Monitored_Item
+APPLICATION = HopAndFound_Monitor
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= pba-d-01-kw2x
 
-DIRS += $(CURDIR)/../common
+DIRS += $(CURDIR)/../../common
 
 # This has to be the absolute path to the RIOT base directory:
-RIOTBASE ?= $(CURDIR)/../../RIOT
+RIOTBASE ?= $(CURDIR)/../../../RIOT
 # Uncomment this to enable scheduler statistics for ps:
 #CFLAGS += -DSCHEDSTATISTICS
-FEATURES_REQUIRED = periph_gpio periph_spi
-
-# set default device parameters in case they are undefined
-TEST_PCD8544_SPI   ?= SPI_0
-TEST_PCD8544_CS    ?= GPIO_PIN\(2,4\)
-#TEST_PCD8544_RESET ?= GPIO_PIN\(3,4\) Already used by button / led
-#TEST_PCD8544_MODE  ?= GPIO_PIN\(3,1\)
-TEST_PCD8544_RESET ?= GPIO_PIN\(0,1\) 
-TEST_PCD8544_MODE  ?= GPIO_PIN\(0,2\)
 
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
 # development process:
-# export parameters
-CFLAGS += -DTEST_PCD8544_SPI=$(TEST_PCD8544_SPI)
-CFLAGS += -DTEST_PCD8544_CS=$(TEST_PCD8544_CS)
-CFLAGS += -DTEST_PCD8544_RESET=$(TEST_PCD8544_RESET)
-CFLAGS += -DTEST_PCD8544_MODE=$(TEST_PCD8544_MODE)
-CFLAGS += -DDEVELHELP -I$(CURDIR)/../include
+CFLAGS += -DDEVELHELP -I$(CURDIR)/../../include
 
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
@@ -40,9 +26,6 @@ USEMODULE += gnrc_ipv6_default
 USEMODULE += gnrc_conn_udp
 USEMODULE += xtimer
 USEMODULE += HAF-common
-USEMODULE += pcd8544
-
-
 
 #USEMODULE += shell
 #USEMODULE += shell_commands

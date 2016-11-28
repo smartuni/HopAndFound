@@ -3,6 +3,8 @@
 #include "connection.h"
 #include "global.h"
 
+#include <stdlib.h>
+
 uint8_t node_list[MAX_NODES];
  
 void send_localization_reply(ipv6_addr_t* dst){

@@ -1,9 +1,30 @@
 #ifndef HEARTBEAT_H
 #define HEARTBEAT_H
 
-void heartbeat_handler_init(void);
+/* 
+ * Returns active state of heartbeat sending.
+ */
+bool getHeartbeatActive(void);
+/* 
+ * Sets active state of heartbeat sending.
+ */
+void setHeartbeatActive(bool status);
+
+/* 
+ * Initializes the heartbeat handler for incoming heartbeats.
+ */
+void heartbeat_timeout_init(void);
+/* 
+ * Handles incoming heartbeat.
+ */
 void handle_heartbeat(void);
-void heartbeat_sender_start(void);
+/* 
+ * Starts sending of heartbeats.
+ */
+void heartbeat_sender_init(void);
+/* 
+ * Stops sending of heartbeats.
+ */
 void heartbeat_sender_stop(void);
 
 #endif /* HEARTBEAT_H */
