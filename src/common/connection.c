@@ -67,8 +67,6 @@ int udp_server_start(dispatcher_callback_t cb) {
     }
 }
 
-
-
 int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 	int res;
     ipv6_addr_t src = IPV6_ADDR_UNSPECIFIED;
@@ -156,4 +154,17 @@ ipv6_addr_t* get_ipv6_addr(void){
     memcpy(addr, &entry->addrs[1].addr, sizeof(ipv6_addr_t));
     
     return addr;
+}
+
+void get_ipv6_addr_p(ipv6_addr_t* ipv6_adr){
+	kernel_pid_t dev = _get_netif();
+	gnrc_ipv6_netif_t *entry = gnrc_ipv6_netif_get(dev);
+    
+    memcpy(ipv6_adr, &entry->addrs[1].addr, sizeof(ipv6_addr_t));
+}
+
+void print_ipv6_string(ipv6_addr_t* ipv6_addr) {
+	char src_str[IPV6_ADDR_MAX_STR_LEN];
+	ipv6_addr_to_str(src_str, ipv6_addr, IPV6_ADDR_MAX_STR_LEN);
+	printf("%s", src_str);
 }

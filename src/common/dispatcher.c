@@ -56,13 +56,16 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			call_for_help_t call_for_help;
 			memcpy(&call_for_help, recv_buffer, sizeof(call_for_help));
 #ifdef HAF_DEBUG_DISPATCH
+			char dest_adr_string[IPV6_ADDR_MAX_STR_LEN];
+			ipv6_addr_to_str(dest_adr_string, &call_for_help.dest_adr, IPV6_ADDR_MAX_STR_LEN);
 			puts("------------------------------");
 			puts("CALL_FOR_HELP received.");
 			printf("type: %u\n", call_for_help.type);
 			printf("seq_nr: %lu\n", call_for_help.seq_nr);
 			printf("mi_id: %u\n", call_for_help.mi_id);
 			printf("ttl: %u\n", call_for_help.ttl);
-			printf("dest_adr: %u\n", call_for_help.dest_adr);
+			printf("dest_adr: %s\n", dest_adr_string);
+			//printf("dest_adr: %u\n", call_for_help.dest_adr);
 			for(int i = 0; i < MAX_NODES; i++) {
 				printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
 			}
@@ -78,15 +81,17 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 		}
 		case UPDATE: {
 			update_t update;
-			uint8_t source_adr;
+			ipv6_addr_t source_adr;
 			memcpy(&update, recv_buffer, sizeof(update));
 			source_adr = update.source_adr; //DATENTYP PRÜFEN
 #ifdef HAF_DEBUG_DISPATCH
+			char source_adr_string[IPV6_ADDR_MAX_STR_LEN];
+			ipv6_addr_to_str(source_adr_string, &source_adr, IPV6_ADDR_MAX_STR_LEN);
 			puts("------------------------------");
-			printf("UPDATE von MAC-Adr %d received.\n", source_adr);
+			printf("UPDATE von IP-Adr %s received.\n", source_adr_string);
 			printf("type: %u\n", update.type);
 			/*for(int i = 0; i < MAX_DEVICES; i++) {
-				printf("routing_tbl[%d].mac_adr: %u\n", i, update.routing_tbl[i].mac_adr);
+				printf("routing_tbl[%d].ip_addr: %u\n", i, update.routing_tbl[i].ip_addr);
 				printf("routing_tbl[%d].hops: %u\n", i, update.routing_tbl[i].hops);
 				printf("routing_tbl[%d].next_hop_adr: %u\n", i, update.routing_tbl[i].next_hop_adr);
 				printf("routing_tbl[%d].exp_time: %" PRIu32 "\n", i, update.routing_tbl[i].exp_time);
@@ -153,13 +158,16 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			call_for_help_t call_for_help;
 			memcpy(&call_for_help, recv_buffer, sizeof(call_for_help));
 #ifdef HAF_DEBUG_DISPATCH
+			char dest_adr_string[IPV6_ADDR_MAX_STR_LEN];
+			ipv6_addr_to_str(dest_adr_string, &call_for_help.dest_adr, IPV6_ADDR_MAX_STR_LEN);
 			puts("------------------------------");
 			puts("CALL_FOR_HELP received.");
 			printf("type: %u\n", call_for_help.type);
 			printf("seq_nr: %lu\n", call_for_help.seq_nr);
 			printf("mi_id: %u\n", call_for_help.mi_id);
 			printf("ttl: %u\n", call_for_help.ttl);
-			printf("dest_adr: %u\n", call_for_help.dest_adr);
+			printf("dest_adr: %s\n", dest_adr_string);
+			//printf("dest_adr: %u\n", call_for_help.dest_adr);
 			for(int i = 0; i < MAX_NODES; i++) {
 				printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
 			}
@@ -170,15 +178,18 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 		}
 		case UPDATE: {
 			update_t update;
-			uint8_t source_adr;
+			ipv6_addr_t source_adr;
 			memcpy(&update, recv_buffer, sizeof(update));
 			source_adr = update.source_adr; //DATENTYP PRÜFEN
 #ifdef HAF_DEBUG_DISPATCH
+			char source_adr_string[IPV6_ADDR_MAX_STR_LEN];
+			ipv6_addr_to_str(source_adr_string, &source_adr, IPV6_ADDR_MAX_STR_LEN);
 			puts("------------------------------");
-			printf("UPDATE von MAC-Adr %d received.\n", source_adr);
+			printf("UPDATE von IP-Adr %s received.\n", source_adr_string);
+			//printf("UPDATE von IP-Adr %d received.\n", source_adr);
 			printf("type: %u\n", update.type);
 			/*for(int i = 0; i < MAX_DEVICES; i++) {
-				printf("routing_tbl[%d].mac_adr: %u\n", i, update.routing_tbl[i].mac_adr);
+				printf("routing_tbl[%d].ip_addr: %u\n", i, update.routing_tbl[i].ip_addr);
 				printf("routing_tbl[%d].hops: %u\n", i, update.routing_tbl[i].hops);
 				printf("routing_tbl[%d].next_hop_adr: %u\n", i, update.routing_tbl[i].next_hop_adr);
 				printf("routing_tbl[%d].exp_time: %" PRIu32 "\n", i, update.routing_tbl[i].exp_time);

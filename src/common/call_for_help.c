@@ -27,7 +27,8 @@ void call_for_help_handler_init(void) {
 
 void send_call_for_help(void) {
 	call_for_help_t pkg;
-	pkg.dest_adr = MONITOR_ID;
+	ipv6_addr_from_str(&pkg.dest_adr, MONITOR_IP);
+	//pkg.dest_adr = MONITOR_IP;
 	pkg.ttl = 99;
 	pkg.type = CALL_FOR_HELP;
 
@@ -40,6 +41,7 @@ void send_call_for_help(void) {
 		
 	pkg.mi_id = MONITORED_ITEM_ID;
 	memcpy(&pkg.node_list, get_node_list(), MAX_NODES);
+	//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr);
 	udp_send(&pkg, sizeof(pkg), NULL);	
 	
 /*#ifdef HAF_DEBUG_NODE_MAP
@@ -60,7 +62,8 @@ void forward_call_for_help(call_for_help_t* p) {
 		printf("seq_nr: %lu\n", p->seq_nr);
 		printf("mi_id: %u\n", p->mi_id);
 		printf("ttl: %u\n", p->ttl);
-		printf("dest_adr: %u\n", p->dest_adr);
+		printf("dest_adr: "); print_ipv6_string(&p->dest_adr); printf("\n");
+		//printf("dest_adr: %u\n", p->dest_adr);
 #endif
 		pkg.type = p->type;
 		pkg.seq_nr = p->seq_nr;
@@ -74,6 +77,7 @@ void forward_call_for_help(call_for_help_t* p) {
 #ifdef TEST_PRESENTATION
 		p->node_list_path[NODE_ID] = 1;
 #endif /* TEST_PRESENTATION */
+		//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr);
 		udp_send(&pkg, sizeof(pkg), NULL);
 		seq_nr_recv = p->seq_nr;
 	}
