@@ -15,8 +15,12 @@ FEATURES_REQUIRED = periph_gpio periph_spi
 # set default device parameters in case they are undefined
 TEST_PCD8544_SPI   ?= SPI_0
 TEST_PCD8544_CS    ?= GPIO_PIN\(2,4\)
-TEST_PCD8544_RESET ?= GPIO_PIN\(3,4\)
-TEST_PCD8544_MODE  ?= GPIO_PIN\(3,1\)
+
+#TEST_PCD8544_RESET ?= GPIO_PIN\(3,4\) Already used by button / led
+#TEST_PCD8544_MODE  ?= GPIO_PIN\(3,1\)
+TEST_PCD8544_RESET ?= GPIO_PIN\(0,1\) 
+TEST_PCD8544_MODE  ?= GPIO_PIN\(0,2\)
+
 
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
@@ -34,9 +38,8 @@ QUIET ?= 1
 # Modules to include:
 USEMODULE += gnrc_netdev_default
 USEMODULE += auto_init_gnrc_netif
-USEMODULE += gnrc_ipv6
-USEMODULE += gnrc_sock_check_reuse
-USEMODULE += gnrc_sock_udp
+USEMODULE += gnrc_ipv6_default
+USEMODULE += gnrc_conn_udp
 USEMODULE += xtimer
 USEMODULE += HAF-common
 USEMODULE += pcd8544

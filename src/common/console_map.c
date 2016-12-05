@@ -16,6 +16,18 @@ static char* map_template = "\
 		|                       |\n\
 		\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m\n";
 
+		
+/*static char* map_template = "\
+		\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m\n\
+		|           |\n\
+		|           |\n\
+		|           |\n\
+		\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m\n\
+		|           |\n\
+		|           |\n\
+		|           |\n\
+		\x1b[00mX\x1b[0m-----------\x1b[00mX\x1b[0m\n";*/
+
 
 void generateAndPrintRandomMaps(void){
 	uint8_t nodes[6];

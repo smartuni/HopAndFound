@@ -8,10 +8,9 @@
 #include "localization_reply.h"
 #include "localization_request.h"
 #include "heartbeat.h"
+#include "haf_LED.h"
 
-
-
-void dispatch_monitored_item(uint8_t recv_buffer[], sock_udp_ep_t* address) {
+void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 	switch(recv_buffer[0]) {
 		case HEARTBEAT: {
 			heartbeat_t heartbeat;
@@ -50,7 +49,7 @@ void dispatch_monitored_item(uint8_t recv_buffer[], sock_udp_ep_t* address) {
 	}
 }
 
-void dispatch_monitor(uint8_t recv_buffer[], sock_udp_ep_t* address) {
+void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 	switch(recv_buffer[0]) {
 		case CALL_FOR_HELP: {
 			call_for_help_t call_for_help;
@@ -66,6 +65,10 @@ void dispatch_monitor(uint8_t recv_buffer[], sock_udp_ep_t* address) {
 			}
 #endif
 			
+#ifdef TEST_PRESENTATION
+			start_LED_blink(LED_RED, 3);
+#endif /* TEST_PRESENTATION */
+
 			handle_call_for_help(&call_for_help, MONITOR);
 			
 			break;
@@ -80,7 +83,7 @@ void dispatch_monitor(uint8_t recv_buffer[], sock_udp_ep_t* address) {
 	}
 }
 
-void dispatch_node(uint8_t recv_buffer[], sock_udp_ep_t* address) {
+void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 	switch(recv_buffer[0]) {
 		case LOCALIZATION_REQUEST: {
 			localization_request_t localization_request;
@@ -91,10 +94,37 @@ void dispatch_node(uint8_t recv_buffer[], sock_udp_ep_t* address) {
 			printf("type: %u\n", localization_request.type);
 #endif
 			
+#ifdef TEST_PRESENTATION
+			start_LED_blink(LED_BLUE, 3);
+#endif /* TEST_PRESENTATION */
+			
 			handle_localization_request(address);
 			
 			break;
 		}
+#ifdef TEST_PRESENTATION
+		case LOCALIZATION_REPLY: {
+			localization_reply_t localization_reply;
+			memcpy(&localization_reply, recv_buffer, sizeof(localization_reply));
+#ifdef HAF_DEBUG_DISPATCH
+			puts("------------------------------");
+			puts("LOCALIZATION_REPLY received.");
+			printf("type: %u\n", localization_reply.type);
+			printf("node_id: %u\n", localization_reply.node_id);
+#endif /* HAF_DEBUG_DISPATCH */
+			uint8_t* node_list = get_node_list();
+			if (node_list[localization_reply.node_id] == 1){
+#ifdef HAF_DEBUG_DISPATCH
+			printf("DROPPED\n");
+#endif
+				break;
+			}
+			
+			handle_localization_reply(&localization_reply);
+			
+			break;
+		}
+#endif /* TEST_PRESENTATION */
 		case CALL_FOR_HELP: {
 			call_for_help_t call_for_help;
 			memcpy(&call_for_help, recv_buffer, sizeof(call_for_help));

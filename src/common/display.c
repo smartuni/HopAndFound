@@ -116,6 +116,8 @@ void printMonitoredItemInRange(void){
 }
 
 void printDisplayHopAndFound(void){
+	 pcd8544_clear(&dev);
+
 	 pcd8544_write_s(&dev,0,1,"Hop And Found");
      pcd8544_write_s(&dev,3,3,"active!");  
 }
@@ -167,8 +169,77 @@ void printDisplayMapString(uint8_t* nodes){
    printMonitoredItemLost();
 }
 
+
+void printDisplayMapStringPath(uint8_t* nodes,uint8_t* node_list_path){
+   pcd8544_clear(&dev);
+
+   char row1[10]="X   X   X";
+   char row2[10]="         "; //row 3 always the same as row2
+   char row4[10]="X   X   X";
+   
+   if(nodes[0]==1){
+	  row1[0]='0';
+   }
+   if(nodes[1]==1){
+	  row1[4]='1';
+   }
+   if(nodes[2]==1){
+	  row1[8]='2';
+   }
+   if(nodes[3]==1){
+	  row4[0]='3';
+   }
+   if(nodes[4]==1){
+	  row4[4]='4';
+   }   
+   if(nodes[5]==1){
+	  row4[8]='5';
+   }
+   
+   if(node_list_path[0] && node_list_path[1]){
+	   row1[1]='-';
+	   row1[2]='-';
+	   row1[3]='-';
+   }
+   if(node_list_path[1] && node_list_path[2]){
+	   row1[5]='-';
+	   row1[6]='-';
+	   row1[7]='-';
+   }
+   if(node_list_path[3] && node_list_path[4]){
+	   row4[1]='-';
+	   row4[2]='-';
+	   row4[3]='-';
+   }
+   if(node_list_path[4] && node_list_path[5]){
+	   row4[5]='-';
+	   row4[6]='-';
+	   row4[7]='-';
+   }
+   if(node_list_path[0] && node_list_path[3]){
+	  row2[0]='|';  
+   }
+   if(node_list_path[2] && node_list_path[5]){
+	  row2[9]='|';  
+   }
+      if(node_list_path[1] && node_list_path[4]){
+	  row2[4]='|';  
+   }
+   
+   pcd8544_write_s(&dev,MAP_X_OFFSET/2,MAP_Y_OFFSET,row1);
+   pcd8544_write_s(&dev,MAP_X_OFFSET/2,MAP_Y_OFFSET+1,row2);
+   pcd8544_write_s(&dev,MAP_X_OFFSET/2,MAP_Y_OFFSET+2,row2);
+   pcd8544_write_s(&dev,MAP_X_OFFSET/2,MAP_Y_OFFSET+3,row4);
+   
+  // printMonitoredItemLost();
+}
+
+
+
+
 void displayInit(void){
-	printf("%d , %d",TEST_PCD8544_CS,TEST_PCD8544_MODE);
+	printf("%d , %d\n",TEST_PCD8544_CS,TEST_PCD8544_MODE);
+
     printf("Initializing PCD8544 LCD at SPI_%i... ", TEST_PCD8544_SPI);//TEST_X defined in MAKEFILE
     if (pcd8544_init(&dev, TEST_PCD8544_SPI, TEST_PCD8544_CS,
                      TEST_PCD8544_RESET, TEST_PCD8544_MODE) != 0) {
