@@ -20,10 +20,13 @@
 //Stack for thread to handle task after _timer_localization_request interrupts	
 char routing_stack[THREAD_STACKSIZE_MAIN];
 
+int routing_thread_mutex = 0;
+
 
 xtimer_t timer_update;
 
 routing_tbl_t routing_tbl[MAX_DEVICES];
+update_t pkg;
 
 
 void _update(void){
@@ -32,7 +35,6 @@ void _update(void){
 	//printf("systemzeit: %" PRIu32 "\n", xtimer_now() );
 	//printf("exp time: %" PRIu32 "\n", ( xtimer_now() + EXP_TIMEOUT ) );
 #endif
-	update_t pkg;
 	check_exp();
 	pkg.type = UPDATE;
 	get_ipv6_addr_p(&pkg.source_adr);
@@ -63,12 +65,18 @@ void _update(void){
 	}
 	udp_send(&pkg, sizeof(pkg), NULL);
 	xtimer_set(&timer_update, TIMEOUT);
+	routing_thread_mutex = 0;
 }
 
 void _routing_handler(void){
+	if (routing_thread_mutex == 1){
+		printf("OH OH; DOUBLE THREAD\n");
+		return;
+	}
 	thread_create(routing_stack, sizeof(routing_stack),
 			ROUTING_THREAD_PRIORITY, THREAD_CREATE_STACKTEST,
 			(void *) _update, NULL, "routing_callback");
+	routing_thread_mutex = 1;
 }
 
 void init(void) { //muss in der main aufgerufen werden
