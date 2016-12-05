@@ -31,20 +31,9 @@ int main(void){
 	haf_button_init(haf_button_cb_monitor);
 #endif
 
-<<<<<<< HEAD
-	call_for_help_handler_init();
-	displayInit();
-	printDisplayHopAndFound();
-	
-	udp_server_start((dispatcher_callback_t)dispatch_monitor);
-		
-	heartbeat_sender_start();
-=======
 	printDisplayHopAndFound();
 	heartbeat_sender_init();
 	udp_server_start((dispatcher_callback_t) dispatch_monitor);
->>>>>>> dev
-	
 
 	return 0;
 }
