@@ -1,28 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "global.h"
 #include "haf_queue.h"
 #include "mutex.h"
 
-mutex_t mux;
+mutex_t queue_mutex;
+mutex_t blocking_wait_mutex;
 haf_queue_t* queue;
 int queue_count;
 
 void haf_queue_init(void){
-	mutex_init(&mux);
+	mutex_init(&queue_mutex);
 	
 	queue = (haf_queue_t*) malloc(sizeof(haf_queue_t));
 	
 	queue->f = NULL;
 	queue->next = NULL;
+	
+	mutex_lock(&blocking_wait_mutex);
 }
 
-int haf_queue_enqueue(void* func){
+int haf_queue_enqueue(thread_function_t func){
 	if (queue_count >= MAX_QUEUE_ELEMENTS){
 		return -1;
 	}
 	
-	mutex_lock(&mux);
+	mutex_lock(&queue_mutex);
 	
 	if (queue->f == NULL && queue->next == NULL){
 		queue->f = func;
@@ -44,19 +48,19 @@ int haf_queue_enqueue(void* func){
 	
 	++queue_count;
 	
-	mutex_unlock(&mux);
+	mutex_unlock(&blocking_wait_mutex);
+	mutex_unlock(&queue_mutex);
 	
 	return 0;
 }
 
-void* haf_queue_dequeue(void){
-	if (queue->f == NULL && queue->next == NULL){
-		return NULL;
-	}
+thread_function_t haf_queue_dequeue(void){
+	mutex_lock(&blocking_wait_mutex);
+	mutex_unlock(&blocking_wait_mutex);
 	
-	mutex_lock(&mux);
+	mutex_lock(&queue_mutex);
 	
-	void* ret_f = queue->f;
+	thread_function_t ret_f = queue->f;
 	
 	if (queue->next != NULL){
 		haf_queue_t* to_be_freed = queue;
@@ -69,7 +73,11 @@ void* haf_queue_dequeue(void){
 	
 	--queue_count;
 	
-	mutex_unlock(&mux);
+	if (queue_count == 0){
+		mutex_lock(&blocking_wait_mutex);
+	}
+	
+	mutex_unlock(&queue_mutex);
 	
 	return ret_f;
 }

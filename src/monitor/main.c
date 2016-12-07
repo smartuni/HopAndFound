@@ -11,6 +11,7 @@
 #include "heartbeat.h"
 #include "display.h"
 #include "call_for_help.h"
+#include "haf_thread.h"
 
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
@@ -18,6 +19,7 @@ int main(void){
 	set_netif(CHANNEL, NETIF_CHANNEL);
 	
 	xtimer_init();
+	haf_thread_create();
 	call_for_help_handler_init();
 	displayInit();	
 	
