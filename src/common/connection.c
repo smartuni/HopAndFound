@@ -148,12 +148,9 @@ int set_netif(netif_mode_t mode, int16_t val){
 	return res < 0 ? res : 0;
 }
 
-ipv6_addr_t* get_ipv6_addr(void){
+void get_ipv6_addr(ipv6_addr_t* addr){
 	kernel_pid_t dev = _get_netif();
 	gnrc_ipv6_netif_t *entry = gnrc_ipv6_netif_get(dev);
-    ipv6_addr_t* addr = (ipv6_addr_t*) malloc(sizeof(ipv6_addr_t));
-    
+	
     memcpy(addr, &entry->addrs[1].addr, sizeof(ipv6_addr_t));
-    
-    return addr;
 }
