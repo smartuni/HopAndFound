@@ -118,6 +118,12 @@ void printMonitoredItemInRange(void){
 void printDisplayHopAndFound(void){
 	 pcd8544_clear(&dev);
 
+	 pcd8544_write_s(&dev,1,2,"Hop And Found"); 
+}
+
+void printDisplayHopAndFoundActive(void){
+	 pcd8544_clear(&dev);
+
 	 pcd8544_write_s(&dev,0,1,"Hop And Found");
      pcd8544_write_s(&dev,3,3,"active!");  
 }

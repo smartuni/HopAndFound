@@ -43,7 +43,7 @@ int udp_server_start(dispatcher_callback_t cb) {
 		memset(recv_buffer, 0, sizeof(recv_buffer));
 		if((res = conn_udp_recvfrom(&conn, &recv_buffer, sizeof(recv_buffer),
 									&src, &src_len, &port)) < 0) {
-			puts("Error while receiving\n");			
+			printf("Error while receiving, error code = %d\n", res);			
 			// TODO error handling
         } else if(res == 0) {
             puts("No data received\n");

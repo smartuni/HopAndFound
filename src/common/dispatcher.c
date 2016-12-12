@@ -9,6 +9,8 @@
 #include "localization_request.h"
 #include "heartbeat.h"
 #include "haf_LED.h"
+#include "display.h"
+#include "bind.h"
 
 void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 	switch(recv_buffer[0]) {
@@ -71,6 +73,15 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 
 			handle_call_for_help(&call_for_help, MONITOR);
 			
+			break;
+		}
+		case BIND: {
+			printf("Bind received!");
+			
+			bind_t bind;
+			memcpy(&bind, recv_buffer, sizeof(bind));
+	
+			handle_bind(&bind);
 			break;
 		}
 		default: {

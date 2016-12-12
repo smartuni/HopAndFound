@@ -8,6 +8,7 @@
 #include "xtimer.h"
 #include "localization_request.h"
 #include "heartbeat.h"
+#include "bind.h"
 
 #define DEBOUNCE_TIME_USEC	250000
 
@@ -43,7 +44,7 @@ void haf_button_cb_monitor(void *arg) {
 void haf_button_cb_monitored_item(void *arg) {
 	if(_debounced) {
 		_debounced = false;
-		//TODO: add functionality
+		send_bind();
 		xtimer_set(&_timer_debounce, DEBOUNCE_TIME_USEC);
 	}
 }

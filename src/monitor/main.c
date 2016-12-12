@@ -32,7 +32,6 @@ int main(void){
 #endif
 
 	printDisplayHopAndFound();
-	heartbeat_sender_init();
 	udp_server_start((dispatcher_callback_t) dispatch_monitor);
 
 	return 0;

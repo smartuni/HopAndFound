@@ -2,14 +2,15 @@
 #define HAF_PROTOCOL_H
 
 #include <stdint.h>
-
+#include <net/gnrc/ipv6/netif.h>
 #include "global.h"
 
 typedef enum pkg_type{
 	HEARTBEAT,
 	LOCALIZATION_REQUEST,
 	LOCALIZATION_REPLY,
-	CALL_FOR_HELP
+	CALL_FOR_HELP,
+	BIND
 } pkg_type_t;
 
 typedef struct __attribute__((packed)) {
@@ -34,5 +35,10 @@ typedef struct __attribute__((packed)) {
 	uint8_t node_list_path[MAX_NODES];	// nodes which forwarded THIS call for help
 #endif /* TEST_PRESENTATION */
 }call_for_help_t;
+
+typedef struct __attribute__((packed)) {
+	uint8_t type;
+	ipv6_addr_t* mi;
+} bind_t;
 
 #endif /* HAF_PROTOCOL_H */
