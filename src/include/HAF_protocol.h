@@ -19,7 +19,7 @@ typedef enum pkg_type{
 	LOCALIZATION_REQUEST,
 	LOCALIZATION_REPLY,
 	CALL_FOR_HELP,
-	BIND
+	BIND,
 	UPDATE
 } pkg_type_t;
 

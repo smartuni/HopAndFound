@@ -80,13 +80,15 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 		}
 
 		case BIND: {
-			printf("Bind received!");
+			printf("Bind received \n");
 			
 			bind_t bind;
 			memcpy(&bind, recv_buffer, sizeof(bind));
 	
 			handle_bind(&bind);
-
+			break;
+		}
+		
 		case UPDATE: {
 			update_t update;
 			uint8_t source_adr;
