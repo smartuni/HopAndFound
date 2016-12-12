@@ -5,6 +5,7 @@
 #include "xtimer.h"
 #include "connection.h"
 #include "dispatcher.h"
+#include "routing.h"
 #include "haf_button.h"
 #include "haf_LED.h"
 #include "localization_request.h"
@@ -19,6 +20,7 @@ int main(void){
 #endif
 
 	xtimer_init();
+	init();
 
 #ifdef TEST_PRESENTATION
 	init_LED();

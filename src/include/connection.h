@@ -41,6 +41,6 @@ int udp_server_start(dispatcher_callback_t cb);
 */
 int set_netif(netif_mode_t mode, int16_t val);
 
-ipv6_addr_t* get_ipv6_addr(void);
+void get_ipv6_addr(ipv6_addr_t* addr);
 
 #endif

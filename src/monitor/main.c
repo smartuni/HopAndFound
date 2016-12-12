@@ -9,6 +9,7 @@
 #include "haf_LED.h"
 #include "localization_request.h"
 #include "heartbeat.h"
+#include "routing.h"
 #include "display.h"
 #include "call_for_help.h"
 
@@ -30,6 +31,7 @@ int main(void){
 	haf_button_init(haf_button_cb_monitor);
 #endif
 
+	init();
 	printDisplayHopAndFound();
 	heartbeat_sender_init();
 	udp_server_start((dispatcher_callback_t) dispatch_monitor);

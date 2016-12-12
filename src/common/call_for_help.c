@@ -27,10 +27,11 @@ void call_for_help_handler_init(void) {
 
 void send_call_for_help(void) {
 	call_for_help_t pkg;
-
+	pkg.dest_adr = MONITOR_ID;
+	pkg.ttl = 99;
 	pkg.type = CALL_FOR_HELP;
 
-	if ( seq_nr_send >= 1000000 ) { //Abfrage im Empfang berücksichtigen
+	if ( seq_nr_send >= 1000000 ) { //Abfrage im Empfang beruecksichtigen
 		seq_nr_send = 0;
 	}
 	
@@ -48,16 +49,32 @@ void send_call_for_help(void) {
 	resetNodeList();
 }
 
-
+// Fuer den ersten Milestone wird die mi_id nicht mit ausgewertet
+//Seq_nr_recv abfrage fuer limit erreicht (1000000) fehlt
 void forward_call_for_help(call_for_help_t* p) {
+	call_for_help_t pkg;
 	if (p->seq_nr > seq_nr_recv){
 #ifdef HAF_DEBUG
-			printf("CALL FOR HELP forward.\n");
+		printf("CALL FOR HELP forward.\n");
+		printf("type: %u\n", p->type);
+		printf("seq_nr: %lu\n", p->seq_nr);
+		printf("mi_id: %u\n", p->mi_id);
+		printf("ttl: %u\n", p->ttl);
+		printf("dest_adr: %u\n", p->dest_adr);
 #endif
+		pkg.type = p->type;
+		pkg.seq_nr = p->seq_nr;
+		pkg.mi_id = p->mi_id;
+		for(int i = 0; i < MAX_NODES; i++) {
+			pkg.node_list[i] = p->node_list[i];
+		}
+		pkg.ttl = p->ttl;
+		pkg.dest_adr = p->dest_adr;
+
 #ifdef TEST_PRESENTATION
 		p->node_list_path[NODE_ID] = 1;
 #endif /* TEST_PRESENTATION */
-		udp_send(p, sizeof(p), NULL);
+		udp_send(&pkg, sizeof(pkg), NULL);
 		seq_nr_recv = p->seq_nr;
 	}
 }
