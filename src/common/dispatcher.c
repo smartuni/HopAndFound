@@ -8,6 +8,7 @@
 #include "localization_reply.h"
 #include "localization_request.h"
 #include "heartbeat.h"
+#include "routing.h"
 #include "haf_LED.h"
 #include "display.h"
 #include "bind.h"
@@ -62,6 +63,8 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			printf("type: %u\n", call_for_help.type);
 			printf("seq_nr: %lu\n", call_for_help.seq_nr);
 			printf("mi_id: %u\n", call_for_help.mi_id);
+			printf("ttl: %u\n", call_for_help.ttl);
+			printf("dest_adr: %u\n", call_for_help.dest_adr);
 			for(int i = 0; i < MAX_NODES; i++) {
 				printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
 			}
@@ -75,6 +78,7 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			
 			break;
 		}
+
 		case BIND: {
 			printf("Bind received!");
 			
@@ -82,6 +86,27 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			memcpy(&bind, recv_buffer, sizeof(bind));
 	
 			handle_bind(&bind);
+
+		case UPDATE: {
+			update_t update;
+			uint8_t source_adr;
+			memcpy(&update, recv_buffer, sizeof(update));
+			source_adr = update.source_adr; //DATENTYP PRÜFEN
+#ifdef HAF_DEBUG_DISPATCH
+			puts("------------------------------");
+			printf("UPDATE von MAC-Adr %d received.\n", source_adr);
+			printf("type: %u\n", update.type);
+			/*for(int i = 0; i < MAX_DEVICES; i++) {
+				printf("routing_tbl[%d].mac_adr: %u\n", i, update.routing_tbl[i].mac_adr);
+				printf("routing_tbl[%d].hops: %u\n", i, update.routing_tbl[i].hops);
+				printf("routing_tbl[%d].next_hop_adr: %u\n", i, update.routing_tbl[i].next_hop_adr);
+				printf("routing_tbl[%d].exp_time: %" PRIu32 "\n", i, update.routing_tbl[i].exp_time);
+			}*/
+#endif
+			
+			handle_update(&update, source_adr);
+			
+
 			break;
 		}
 		default: {
@@ -145,12 +170,34 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			printf("type: %u\n", call_for_help.type);
 			printf("seq_nr: %lu\n", call_for_help.seq_nr);
 			printf("mi_id: %u\n", call_for_help.mi_id);
+			printf("ttl: %u\n", call_for_help.ttl);
+			printf("dest_adr: %u\n", call_for_help.dest_adr);
 			for(int i = 0; i < MAX_NODES; i++) {
 				printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
 			}
 #endif
+			if ( checkroute(&call_for_help) ) handle_call_for_help(&call_for_help, NODE);
 			
-			handle_call_for_help(&call_for_help, NODE);
+			break;
+		}
+		case UPDATE: {
+			update_t update;
+			uint8_t source_adr;
+			memcpy(&update, recv_buffer, sizeof(update));
+			source_adr = update.source_adr; //DATENTYP PRÜFEN
+#ifdef HAF_DEBUG_DISPATCH
+			puts("------------------------------");
+			printf("UPDATE von MAC-Adr %d received.\n", source_adr);
+			printf("type: %u\n", update.type);
+			/*for(int i = 0; i < MAX_DEVICES; i++) {
+				printf("routing_tbl[%d].mac_adr: %u\n", i, update.routing_tbl[i].mac_adr);
+				printf("routing_tbl[%d].hops: %u\n", i, update.routing_tbl[i].hops);
+				printf("routing_tbl[%d].next_hop_adr: %u\n", i, update.routing_tbl[i].next_hop_adr);
+				printf("routing_tbl[%d].exp_time: %" PRIu32 "\n", i, update.routing_tbl[i].exp_time);
+			}*/
+#endif
+			
+			handle_update(&update, source_adr);
 			
 			break;
 		}

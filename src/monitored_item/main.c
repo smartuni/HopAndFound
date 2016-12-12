@@ -9,6 +9,8 @@
 #include "haf_LED.h"
 #include "localization_request.h"
 #include "heartbeat.h"
+#include "routing.h"
+#include "call_for_help.h"
 
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);

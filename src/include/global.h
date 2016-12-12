@@ -1,9 +1,15 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#define NODE_ID (2)
-#define MONITORED_ITEM_ID (1)
+#define NODE_ID (4)
+#define DEV_MAC_ADR (NODE_ID+1)
+
+
+#define MONITORED_ITEM_ID (7)
+#define MONITOR_ID (8)
 #define MAX_NODES (6)
+#define MAX_DEVICES (8)
+
 
 //#define MONITORED_ITEM_IP { 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \                            0xf8, 0xe3, 0x4e, 0x62, 0x71, 0xba, 0x60, 0x0a }
 //#define MONITORED_ITEM_IP ("fe80::f8e3:4e62:71ba:600a")
