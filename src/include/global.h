@@ -23,6 +23,8 @@
 
 #define STARTUP_SLEEPTIME_SEC (1)
 
+#define HAF_USE_SOCK_UDP
+
 #define HAF_DEBUG
 #define HAF_DEBUG_NODE_MAP
 #define HAF_DEBUG_DISPATCH

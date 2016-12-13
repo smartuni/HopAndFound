@@ -2,7 +2,13 @@
 #define CALL_FOR_HELP_H
 
 #include "HAF_protocol.h"
+#include "global.h"
+
+#ifdef HAF_USE_SOCK_UDP
+#include "connection_sock.h"
+#else
 #include "connection.h"
+#endif
 
 typedef enum handler{
 	MONITOR,

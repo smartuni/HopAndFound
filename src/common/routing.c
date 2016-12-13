@@ -5,8 +5,13 @@
 
 #include "global.h"
 #include "routing.h"
-#include "connection.h"
 #include "HAF_protocol.h"
+
+#ifdef HAF_USE_SOCK_UDP
+#include "connection_sock.h"
+#else
+#include "connection.h"
+#endif
 
 #define TIMEOUT 9000000 //10sek.
 #define EXP_TIMEOUT 30000000 //60sek.
@@ -15,7 +20,7 @@
 //localization_replies ran out
 #define ROUTING_THREAD_PRIORITY THREAD_PRIORITY_MAIN + 2
 
-//Stack for thread to handle task after _timer_localization_request interrupts	
+//Stack for thread to handle task after _timer_localization_request interrupts
 char routing_stack[THREAD_STACKSIZE_MAIN];
 
 
@@ -73,7 +78,7 @@ void init(void) { //muss in der main aufgerufen werden
 	//routing_tbl[1].exp_time = ( xtimer_now() + EXP_TIMEOUT );
 	//routing_tbl[2].exp_time = ( xtimer_now() + EXP_TIMEOUT );
 	//routing_tbl[3].exp_time = ( xtimer_now() + EXP_TIMEOUT );
-	
+
 	puts("Init complete - start sending");
 	_update();
 }
@@ -188,4 +193,3 @@ bool checkroute(call_for_help_t* p) {
 	}
 	return false;
 }
-

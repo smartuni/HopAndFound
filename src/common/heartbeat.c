@@ -4,12 +4,17 @@
 
 #include "heartbeat.h"
 #include "HAF_protocol.h"
-#include "connection.h"
 #include "localization_request.h"
 #include "global.h"
 #include "net/ipv6/addr.h"
 #include "haf_LED.h"
 #include "thread.h"
+
+#ifdef HAF_USE_SOCK_UDP
+#include "connection_sock.h"
+#else
+#include "connection.h"
+#endif
 
 
 #define HEARTBEAT_TIMEOUT_USEC	4000000
@@ -30,7 +35,7 @@ xtimer_t timer_send;
 
 //Stack for thread to send after timer_send interrupts
 char heartbeat_send_stack[THREAD_STACKSIZE_MAIN];
-//Stack for thread to handle heartbeat timeout after timer_recv interrupts	
+//Stack for thread to handle heartbeat timeout after timer_recv interrupts
 char heartbeat_timeout_stack[THREAD_STACKSIZE_MAIN];
 
 
@@ -94,11 +99,11 @@ void _heartbeat_send_task(void) {
 
 	ipv6_addr_t d;
 	ipv6_addr_from_str(&d, MONITORED_ITEM_IP);
-	
+
 	heartbeat_t ret_pkg;
 	ret_pkg.type = HEARTBEAT;
 	udp_send(&ret_pkg, sizeof(ret_pkg), &d);
-	
+
 #ifdef HAF_DEBUG
 	puts("HEARTBEAT sent.");
 #endif /* HAF_DEBUG */
