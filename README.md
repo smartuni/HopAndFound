@@ -6,9 +6,9 @@ Hop And Found is a burglar alarm for crowded places like concerts. It is made to
 
 Hop And Found consists of three types of components:
 
-* monitor            Component with a display which the user carries. It signals the user if the device is lost.
-* monitored item     Component which is placed with the item that is monitored.
-* node               Stationary component which is placed at known positions in an area for forwardong messages.
+* monitor:				Component with a display which the user carries. It signals the user if the device is lost.
+* monitored item:		Component which is placed with the item that is monitored.
+* node:					Stationary component which is placed at known positions in an area for forwardong messages.
 
 ## Hardware ##
 
@@ -17,10 +17,10 @@ The display of the monitor is the Nokia pcd8544.
 
 ## Messages ##
 
-* heartbeat                Sent from the monitor to the monitored item to ensure the distance between the two isn't too great.
-* localization request     Sent to the nodes to determine which nodes are in range.
-* localization reply       Answer to the localization request to confirm node is in range.
-* call for help            Sent by the monitored item or forwarded by the nodes. Contains information about the whereabouts of the monitored item.
+* heartbeat:				Sent from the monitor to the monitored item to ensure the distance between the two isn't too great.
+* localization request:		Sent to the nodes to determine which nodes are in range.
+* localization reply:		Answer to the localization request to confirm node is in range.
+* call for help:			Sent by the monitored item or forwarded by the nodes. Contains information about the whereabouts of the monitored item.
 
 ## I/O ##
 
