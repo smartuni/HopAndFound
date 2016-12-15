@@ -6,12 +6,7 @@
 #include "global.h"
 #include "routing.h"
 #include "HAF_protocol.h"
-
-#ifdef HAF_USE_SOCK_UDP
-#include "connection_sock.h"
-#else
 #include "connection.h"
-#endif
 
 #define TIMEOUT 9000000 //10sek.
 #define EXP_TIMEOUT 30000000 //60sek.

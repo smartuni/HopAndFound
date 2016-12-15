@@ -2,12 +2,8 @@
 #define LOCALIZATION_REQUEST_H
 
 #include "HAF_protocol.h"
-
-#ifdef HAF_USE_SOCK_UDP
-#include "connection_sock.h"
-#else
+#include "global.h"
 #include "connection.h"
-#endif
 
 typedef void (*localization_request_cb_t)(void* arg);
 

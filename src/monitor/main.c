@@ -11,12 +11,7 @@
 #include "routing.h"
 #include "display.h"
 #include "call_for_help.h"
-
-#ifdef HAF_USE_SOCK_UDP
-#include "connection_sock.h"
-#else
 #include "connection.h"
-#endif
 
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
@@ -29,6 +24,12 @@ int main(void){
 
 #ifdef HAF_DEBUG
 	puts("Monitor start!");
+
+#ifdef HAF_USE_SOCK_UDP
+	puts("Using sock_udp");
+#else
+	puts("Using conn_udp");
+#endif
 #endif
 
 #ifdef TEST_PRESENTATION

@@ -9,12 +9,7 @@
 #include "net/ipv6/addr.h"
 #include "haf_LED.h"
 #include "thread.h"
-
-#ifdef HAF_USE_SOCK_UDP
-#include "connection_sock.h"
-#else
 #include "connection.h"
-#endif
 
 
 #define HEARTBEAT_TIMEOUT_USEC	4000000

@@ -8,12 +8,7 @@
 #include "haf_button.h"
 #include "haf_LED.h"
 #include "localization_request.h"
-
-#ifdef HAF_USE_SOCK_UDP
-#include "connection_sock.h"
-#else
 #include "connection.h"
-#endif
 
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
@@ -22,6 +17,12 @@ int main(void){
 
 #ifdef HAF_DEBUG
 	printf("Node start! ID: %d\n", NODE_ID);
+
+#ifdef HAF_USE_SOCK_UDP
+	puts("Using sock_udp");
+#else
+	puts("Using conn_udp");
+#endif
 #endif
 
 	xtimer_init();

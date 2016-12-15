@@ -10,12 +10,7 @@
 #include "heartbeat.h"
 #include "routing.h"
 #include "call_for_help.h"
-
-#ifdef HAF_USE_SOCK_UDP
-#include "connection_sock.h"
-#else
 #include "connection.h"
-#endif
 
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
@@ -30,6 +25,12 @@ int main(void){
 	ipv6_addr_to_str(src_str, addr, IPV6_ADDR_MAX_STR_LEN);
 	printf("Ipv6 Address = %s\n", src_str);
 	free(addr);
+
+#ifdef HAF_USE_SOCK_UDP
+	puts("Using sock_udp");
+#else
+	puts("Using conn_udp");
+#endif
 #endif
 
 	xtimer_init();
