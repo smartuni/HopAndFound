@@ -11,6 +11,7 @@
 #include "routing.h"
 #include "call_for_help.h"
 #include "connection.h"
+#include "haf_thread.h"
 
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
@@ -34,7 +35,7 @@ int main(void){
 #endif
 
 	xtimer_init();
-
+	haf_thread_create();
 #ifdef TEST_PRESENTATION
 	init_LED();
 	haf_button_init(haf_button_cb_monitored_item);

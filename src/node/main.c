@@ -9,6 +9,7 @@
 #include "haf_LED.h"
 #include "localization_request.h"
 #include "connection.h"
+#include "haf_thread.h"
 
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
@@ -27,6 +28,7 @@ int main(void){
 
 	xtimer_init();
 	init();
+	haf_thread_create();
 
 #ifdef TEST_PRESENTATION
 	init_LED();
