@@ -2,6 +2,7 @@
 #define LOCALIZATION_REPLY_H
 
 #include "HAF_protocol.h"
+#include "global.h"
 #include "connection.h"
 
 void handle_localization_reply(localization_reply_t* p);

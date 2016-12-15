@@ -38,6 +38,7 @@ USEMODULE += gnrc_netdev_default
 USEMODULE += auto_init_gnrc_netif
 USEMODULE += gnrc_ipv6_default
 USEMODULE += gnrc_conn_udp
+USEMODULE += gnrc_sock_udp
 USEMODULE += xtimer
 USEMODULE += HAF-common
 USEMODULE += pcd8544

@@ -3,7 +3,6 @@
 
 #include "global.h"
 #include "xtimer.h"
-#include "connection.h"
 #include "dispatcher.h"
 #include "haf_button.h"
 #include "haf_LED.h"
@@ -12,18 +11,27 @@
 #include "routing.h"
 #include "display.h"
 #include "call_for_help.h"
+#include "connection.h"
+#include "haf_thread.h"
 
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
 	set_netif(POWER, SIGNAL_STRENGTH_MONITOR);
 	set_netif(CHANNEL, NETIF_CHANNEL);
-	
+
 	xtimer_init();
+	haf_thread_create();
 	call_for_help_handler_init();
-	displayInit();	
-	
+	displayInit();
+
 #ifdef HAF_DEBUG
 	puts("Monitor start!");
+
+#ifdef HAF_USE_SOCK_UDP
+	puts("Using sock_udp");
+#else
+	puts("Using conn_udp");
+#endif
 #endif
 
 #ifdef TEST_PRESENTATION
@@ -35,6 +43,6 @@ int main(void){
 	printDisplayHopAndFound();
 	heartbeat_sender_init();
 	udp_server_start((dispatcher_callback_t) dispatch_monitor);
-	
+
 	return 0;
 }

@@ -4,16 +4,10 @@
 #include "localization_reply.h"
 #include "xtimer.h"
 #include "console_map.h"
-#include "thread.h"
+#include "haf_queue.h"
 
 #define REQUEST_TIME_USEC (2000000)
 
-//Priority of thread for handling task after waiting period for
-//localization_replies ran out
-#define LOCALIZATION_REQUEST_THREAD_PRIORITY THREAD_PRIORITY_MAIN + 3
-
-//Stack for thread to handle task after _timer_localization_request interrupts	
-char localization_request_stack[THREAD_STACKSIZE_MAIN];
 
 //Callback function, which will be executed after waiting period for
 //localization_replies is over
@@ -40,9 +34,11 @@ void send_localization_request(void) {
 }
 
 void _localization_request_handler(void){
-	thread_create(localization_request_stack, sizeof(localization_request_stack),
-			LOCALIZATION_REQUEST_THREAD_PRIORITY, THREAD_CREATE_STACKTEST,
-			(void *) callback_task, NULL, "localization_request_callback");
+	if (haf_queue_enqueue((thread_function_t) callback_task) == -1){
+#ifdef HAF_DEBUG
+		printf("_localization_request_handler:: too many elements in thread queue.\n");
+#endif /* HAF_DEBUG */
+	}
 }
 
 void localization_request_init(localization_request_cb_t cb) {
@@ -66,7 +62,7 @@ void handle_localization_request(ipv6_addr_t* dst){
  * 	CALLBACK METHODS
  */
 
-void localization_request_cb_monitored_item(void* arg) {
+void localization_request_cb_monitored_item(void) {
 #ifdef HAF_DEBUG_NODE_MAP
 	printConsoleMap(get_node_list(), MAX_NODES);
 #endif /* HAF_DEBUG_NODE_MAP */
@@ -74,7 +70,7 @@ void localization_request_cb_monitored_item(void* arg) {
 	send_call_for_help();
 }
 
-void localization_request_cb_node(void* arg) {
+void localization_request_cb_node(void) {
 #ifdef HAF_DEBUG_NODE_MAP
 	printConsoleMap(get_node_list(), MAX_NODES);
 #endif /* HAF_DEBUG_NODE_MAP */
