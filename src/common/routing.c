@@ -31,8 +31,8 @@ routing_tbl_t routing_tbl[MAX_DEVICES];
 
 void _update(void){
 	printf("update funktion gestartet\n");
-	//printf("systemzeit: %" PRIu32 "\n", xtimer_now() );
-	//printf("exp time: %" PRIu32 "\n", ( xtimer_now() + EXP_TIMEOUT ) );
+	//printf("systemzeit: %" PRIu32 "\n", xtimer_now().ticks32 );
+	//printf("exp time: %" PRIu32 "\n", ( xtimer_now().ticks32 + EXP_TIMEOUT ) );
 	update_t pkg;
 	xtimer_set(&timer_update, TIMEOUT);
 	check_exp();
@@ -75,9 +75,9 @@ void init(void) { //muss in der main aufgerufen werden
 		routing_tbl[i].next_hop_adr = 0;
 		routing_tbl[i].exp_time = 0;
 	}
-	//routing_tbl[1].exp_time = ( xtimer_now() + EXP_TIMEOUT );
-	//routing_tbl[2].exp_time = ( xtimer_now() + EXP_TIMEOUT );
-	//routing_tbl[3].exp_time = ( xtimer_now() + EXP_TIMEOUT );
+	//routing_tbl[1].exp_time = ( xtimer_now().ticks32 + EXP_TIMEOUT );
+	//routing_tbl[2].exp_time = ( xtimer_now().ticks32 + EXP_TIMEOUT );
+	//routing_tbl[3].exp_time = ( xtimer_now().ticks32 + EXP_TIMEOUT );
 
 	puts("Init complete - start sending");
 	_update();
@@ -105,7 +105,7 @@ void handle_update(update_t* p, uint32_t source_adr){
 					printf("empf. rt element %d ist ein direkter nachbar, expiration time wird erneuert in lok. rt element %d\n", i, j);
 					routing_tbl[j].hops = 1;
 					routing_tbl[j].next_hop_adr = routing_tbl[j].mac_adr;
-					routing_tbl[j].exp_time = xtimer_now() + EXP_TIMEOUT;
+					routing_tbl[j].exp_time = xtimer_now().ticks32 + EXP_TIMEOUT;
 				} else { //eintrag kein direkter nachbar
 					//printf("empf. rt element %d ist kein direkter nachbar\n", i);
 					if ( p->routing_tbl[i].hops < routing_tbl[j].hops ) { //prüfe ob route kürzer ist
@@ -117,7 +117,7 @@ void handle_update(update_t* p, uint32_t source_adr){
 							routing_tbl[j].next_hop_adr = source_adr;
 						}
 						routing_tbl[j].hops = p->routing_tbl[i].hops+1;
-						routing_tbl[j].exp_time = xtimer_now() + EXP_TIMEOUT;
+						routing_tbl[j].exp_time = xtimer_now().ticks32 + EXP_TIMEOUT;
 					}
 				}
 			}
@@ -133,7 +133,7 @@ void handle_update(update_t* p, uint32_t source_adr){
 					routing_tbl[j].mac_adr = p->routing_tbl[i].mac_adr; //eintrag in lokale routing table eintragen
 					routing_tbl[j].hops = p->routing_tbl[i].hops + 1;
 					routing_tbl[j].next_hop_adr = source_adr;
-					routing_tbl[j].exp_time = xtimer_now() + EXP_TIMEOUT;
+					routing_tbl[j].exp_time = xtimer_now().ticks32 + EXP_TIMEOUT;
 				}
 			}
 		}
@@ -173,7 +173,7 @@ void handle_update(update_t* p, uint32_t source_adr){
 void check_exp(void){
 	//exp time der routing table einträge prüfen
 	for (int j=1;j<MAX_DEVICES;j++) { //lokale routing table durcharbeiten
-		if ( routing_tbl[j].exp_time <= xtimer_now() ) { //prüfe ob eintrag veraltet
+		if ( routing_tbl[j].exp_time <= xtimer_now().ticks32 ) { //prüfe ob eintrag veraltet
 			routing_tbl[j].mac_adr = 0;
 			routing_tbl[j].hops = 0;
 			routing_tbl[j].next_hop_adr = 0;

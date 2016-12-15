@@ -51,7 +51,7 @@ int udp_server_start(dispatcher_callback_t cb) {
         } else {
 			ipv6_addr_to_str(src_str, &src, IPV6_ADDR_MAX_STR_LEN);
 
-			if (strcmp(last_src, src_str) == 0 && xtimer_now() - last_src_rcv_time < RECV_DROP_DIFF_TIME){
+			if (strcmp(last_src, src_str) == 0 && xtimer_now().ticks32 - last_src_rcv_time < RECV_DROP_DIFF_TIME){
 #ifdef HAF_DEBUG
 				printf("PACKET DROPPED FROM UDP SERVER\n");
 #endif
@@ -61,7 +61,7 @@ int udp_server_start(dispatcher_callback_t cb) {
 			printf("RECEIVED UDP PKG FROM %s\n", src_str);
 #endif
             cb(recv_buffer, &src);
-            last_src_rcv_time = xtimer_now();
+            last_src_rcv_time = xtimer_now().ticks32;
             memcpy(&last_src, &src_str, sizeof(src_str));
         }
     }

@@ -24,6 +24,12 @@ int main(void){
 
 #ifdef HAF_DEBUG
 	puts("Monitored Item start!");
+	ipv6_addr_t *addr = (ipv6_addr_t*) malloc(sizeof(ipv6_addr_t));
+	char src_str[IPV6_ADDR_MAX_STR_LEN];
+	get_ipv6_addr(addr);
+	ipv6_addr_to_str(src_str, addr, IPV6_ADDR_MAX_STR_LEN);
+	printf("Ipv6 Address = %s\n", src_str);
+	free(addr);
 #endif
 
 	xtimer_init();
