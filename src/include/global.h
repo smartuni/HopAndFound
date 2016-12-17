@@ -3,16 +3,14 @@
 
 #define NODE_ID (4)
 
-
-#define DEV_MAC_ADR (4)
 #define MONITORED_ITEM_ID (3)
 
 #define MAX_NODES (6)
 #define MAX_DEVICES (8)
 
-#define MONITOR_IP ("fe80::68d3:4e6c:718d:600a")
+#define MONITOR_IP ("fe80::5605:4d55:5ea9:200a")
 //#define MONITORED_ITEM_IP { 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \                            0xf8, 0xe3, 0x4e, 0x62, 0x71, 0xba, 0x60, 0x0a }
-#define MONITORED_ITEM_IP ("fe80::d283:4e6f:71ac:600a")
+#define MONITORED_ITEM_IP ("fe80::68d3:4e6c:718b:600a")
 //#define MONITORED_ITEM_IP ("fe80::f8e3:4e62:71ba:600a")
 
 #define SIGNAL_STRENGTH_MONITOR (-35)

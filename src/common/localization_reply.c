@@ -2,26 +2,40 @@
 #include "localization_reply.h"
 #include "connection.h"
 #include "global.h"
+#include "routing.h"
 
 #include <stdlib.h>
 
 uint8_t node_list[MAX_NODES];
+localization_reply_route_t route_list;
  
-void send_localization_reply(ipv6_addr_t* dst){
+void send_localization_reply(ipv6_addr_t* dst, ipv6_addr_t* monitor){
+	ipv6_addr_t ipv6_adr;
 	localization_reply_t ret_pkg;
 	ret_pkg.type = LOCALIZATION_REPLY;
 	ret_pkg.node_id = NODE_ID;
+	get_ipv6_addr_p(&ipv6_adr);
+	ret_pkg.node_adr = ipv6_adr;
+	
+	ret_pkg.hops = get_route(monitor);
+	
 	udp_send(&ret_pkg, sizeof(ret_pkg), dst);
 }
  
 void handle_localization_reply(localization_reply_t* p){
 	uint8_t node_id = p->node_id;
-	
+	printf("LOC REPLY EMPFANGEN - NODE ADR: "); print_ipv6_string(&p->node_adr); printf("\n");
+	printf("LOC REPLY EMPFANGEN - HOPS: %d\n", p->hops);
 	if (node_id < 0 || node_id >= MAX_NODES){
 		printf("ERROR: received node id %d in handle_localization_reply\n", node_id);
 		return;
 	}
-	
+	if ( p->hops != 0 ) {
+		if ( route_list.hops == 0 || p->hops < route_list.hops) {
+			printf("LOC REPLY ADRESSE HINZUGEFUEGT: "); print_ipv6_string(&p->node_adr); printf("\n");
+			route_list.node_adr = p->node_adr;
+		}		
+	}
 	node_list[node_id] = 1;
 }
 
@@ -34,4 +48,22 @@ void resetNodeList(void) {
 	for(i = 0; i < MAX_NODES; i++) {
 		node_list[i] = 0;
 	}
+}
+
+void clear_route_list(void) {
+	route_list.hops = 0;
+	 ipv6_addr_set_unspecified(&route_list.node_adr);
+	//UDP_MULTICAST_ADDRESS;
+}
+
+void get_route_p(ipv6_addr_t* ipv6_adr) {
+	//printf("CALL FOR HELP IP "); print_ipv6_string(&route_list.node_adr); printf("\n");
+	//ipv6_adr = route_list.node_adr;
+	memcpy(ipv6_adr, &route_list.node_adr, sizeof(ipv6_addr_t));
+}
+
+void get_hops_p(uint8_t* hops) {
+	
+	//hops = route_list.hops;
+	memcpy(hops, &route_list.hops, sizeof(uint8_t));
 }

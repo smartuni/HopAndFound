@@ -29,11 +29,14 @@ typedef struct heartbeat{//__attribute__((packed)) {
 
 typedef struct localization_request{//__attribute__((packed)) {
 	uint8_t type;
+	ipv6_addr_t monitor;		//gezieltes routing ab mi
 } localization_request_t;
 
 typedef struct localization_reply{//__attribute__((packed)) {
 	uint8_t type;
 	uint8_t node_id;
+	ipv6_addr_t node_adr;	// Gezieltes Routing ab MI
+	uint8_t hops;			//
 } localization_reply_t;
 
 typedef struct call_for_help{//__attribute__((packed)) {
@@ -53,5 +56,10 @@ typedef struct __attribute__((packed)) { //mac adr from source adr
 	ipv6_addr_t source_adr;
 	routing_tbl_t routing_tbl[MAX_DEVICES];
 } update_t;
+
+typedef struct localization_reply_route{
+	ipv6_addr_t node_adr;
+	uint8_t hops;		
+}localization_reply_route_t;
 
 #endif /* HAF_PROTOCOL_H */

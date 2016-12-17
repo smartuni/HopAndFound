@@ -6,6 +6,7 @@
 #include "localization_reply.h"
 #include "xtimer.h"
 #include "display.h"
+#include "routing.h"
 
 #define CALL_FOR_HELP_TIME_USEC		(15000000)
 
@@ -27,9 +28,9 @@ void call_for_help_handler_init(void) {
 
 void send_call_for_help(void) {
 	call_for_help_t pkg;
+	ipv6_addr_t routed_dst;
 	ipv6_addr_from_str(&pkg.dest_adr, MONITOR_IP);
 	//pkg.dest_adr = MONITOR_IP;
-	pkg.ttl = 99;
 	pkg.type = CALL_FOR_HELP;
 
 	if ( seq_nr_send >= 1000000 ) { //Abfrage im Empfang beruecksichtigen
@@ -41,9 +42,15 @@ void send_call_for_help(void) {
 		
 	pkg.mi_id = MONITORED_ITEM_ID;
 	memcpy(&pkg.node_list, get_node_list(), MAX_NODES);
-	//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr);
-	udp_send(&pkg, sizeof(pkg), NULL);	
-	
+	get_hops_p(&pkg.ttl);
+	pkg.ttl++;
+	get_route_p(&routed_dst);
+	udp_send(&pkg, sizeof(pkg), &routed_dst);	
+	printf("CALL FOR HELP SENT TO "); print_ipv6_string(&routed_dst); printf("\n");
+	printf("CALL FOR HELP DEST IP: "); print_ipv6_string(&pkg.dest_adr); printf("\n");
+	//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr); uralt
+	//udp_send(&pkg, sizeof(pkg), NULL);	alt
+	clear_route_list();
 /*#ifdef HAF_DEBUG_NODE_MAP
 	printConsoleMap(get_node_list(), MAX_NODES);
 #endif*/
@@ -77,8 +84,12 @@ void forward_call_for_help(call_for_help_t* p) {
 #ifdef TEST_PRESENTATION
 		p->node_list_path[NODE_ID] = 1;
 #endif /* TEST_PRESENTATION */
+		//---------------------------------------------------neu
+		sendpkg(&pkg);
+		//-------------------------------------------------------neu
+		
 		//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr);
-		udp_send(&pkg, sizeof(pkg), NULL);
+		//udp_send(&pkg, sizeof(pkg), NULL); -------------------------neu
 		seq_nr_recv = p->seq_nr;
 	}
 }
