@@ -16,7 +16,7 @@ void send_bind(void){
 	
 	char ipv6_MI[IPV6_ADDR_MAX_STR_LEN];
 	ipv6_addr_to_str(ipv6_MI, ipMI, IPV6_ADDR_MAX_STR_LEN);
-    printf("SEND UDP PKG TO %s\n", ipv6_MI);
+    printf("Bind TO %s\n", ipv6_MI);
 	
 	udp_send(&pkg, sizeof(pkg), NULL);	// Send multicast
 	heartbeat_timeout_init(); // Start timer when bind was send

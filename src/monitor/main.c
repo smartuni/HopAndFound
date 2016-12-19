@@ -12,6 +12,7 @@
 #include "routing.h"
 #include "display.h"
 #include "call_for_help.h"
+#include "haf_thread.h"
 
 
 int main(void){
@@ -20,6 +21,7 @@ int main(void){
 	set_netif(CHANNEL, NETIF_CHANNEL);
 	
 	xtimer_init();
+	haf_thread_create();
 	call_for_help_handler_init();
 	displayInit();	
 	

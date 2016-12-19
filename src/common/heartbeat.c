@@ -10,16 +10,11 @@
 #include "net/ipv6/addr.h"
 #include "haf_LED.h"
 #include "thread.h"
+#include "haf_queue.h"
 
 
 #define HEARTBEAT_TIMEOUT_USEC	4000000
 #define HEARTBEAT_TIME_USEC		2000000
-
-
-//Priority of thread for sending heartbeats
-#define HEARTBEAT_SEND_THREAD_PRIORITY THREAD_PRIORITY_MAIN + 1
-//Priority of thread for handling heartbeat timeouts
-#define HEARTBEAT_TIMEOUT_THREAD_PRIORITY THREAD_PRIORITY_MAIN + 1
 
 
 //Timer to receive determine heartbeat timeouts
@@ -28,12 +23,14 @@ xtimer_t timer_recv;
 xtimer_t timer_send;
 
 
+
 //Stack for thread to send after timer_send interrupts
 char heartbeat_send_stack[THREAD_STACKSIZE_MAIN];
 //Stack for thread to handle heartbeat timeout after timer_recv interrupts	
 char heartbeat_timeout_stack[THREAD_STACKSIZE_MAIN];
 
 ipv6_addr_t monitoredItemIP;
+
 
 bool heartbeatActive;
 
@@ -65,9 +62,11 @@ void _heartbeat_timeout_task(void) {
 }
 
 void _heartbeat_timeout_handler(void){
-	thread_create(heartbeat_timeout_stack, sizeof(heartbeat_timeout_stack),
-			HEARTBEAT_TIMEOUT_THREAD_PRIORITY, THREAD_CREATE_STACKTEST,
-			(void *) _heartbeat_timeout_task, NULL, "heartbeat_timeout_handler");
+	if (haf_queue_enqueue((thread_function_t) _heartbeat_timeout_task) == -1){
+#ifdef HAF_DEBUG
+		printf("_heartbeat_timeout_handler:: too many elements in thread queue.\n");
+#endif /* HAF_DEBUG */
+	}
 }
 
 void heartbeat_timeout_init(void) {
@@ -112,9 +111,11 @@ void _heartbeat_send_task(void) {
 }
 
 void _heartbeat_send_handler(void){
-	thread_create(heartbeat_send_stack, sizeof(heartbeat_send_stack),
-			HEARTBEAT_SEND_THREAD_PRIORITY, THREAD_CREATE_STACKTEST,
-			(void *) _heartbeat_send_task, NULL, "heartbeat_send_handler");
+	if (haf_queue_enqueue((thread_function_t) _heartbeat_send_task) == -1){
+#ifdef HAF_DEBUG
+		printf("_heartbeat_send_handler:: too many elements in thread queue.\n");
+#endif /* HAF_DEBUG */
+	}
 }
 
 void heartbeat_sender_init(ipv6_addr_t* miIP) {
