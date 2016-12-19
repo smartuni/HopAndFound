@@ -91,10 +91,6 @@ void _heartbeat_send_task(void) {
 	if(heartbeatActive) {
 #endif /* TEST_PRESENTATION */
 
-	//ipv6_addr_t d;
-	//ipv6_addr_from_str(&d, MONITORED_ITEM_IP);
-	//ipv6_addr_from_str(&d, monitoredItemIP);
-	
 	heartbeat_t ret_pkg;
 	ret_pkg.type = HEARTBEAT;
 	udp_send(&ret_pkg, sizeof(ret_pkg), &monitoredItemIP);
@@ -120,17 +116,19 @@ void _heartbeat_send_handler(void){
 }
 
 void heartbeat_sender_init(ipv6_addr_t* miIP) {
-	puts("hearbeat_sender_init start");
-	heartbeatActive = true;
-    timer_send.target = 0;
-    timer_send.long_target = 0;
-	//monitoredItemIP = miIP;
-	puts("hearbeat_sender_init before memcpy");
-	memcpy(&monitoredItemIP,miIP,sizeof(ipv6_addr_t));
-	puts("hearbeat_sender_init after memcpy");
-    timer_send.callback = (void*) _heartbeat_send_handler;
-	xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
-	puts("hearbeat_sender_init end");
+	puts("heartbeat_sender_init");
+	if(!heartbeatActive){
+		heartbeatActive = true;
+		timer_send.target = 0;
+		timer_send.long_target = 0;
+		puts("heartbeat_sender_init2");
+
+	
+		timer_send.callback = (void*) _heartbeat_send_handler;
+		xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
+		
+		memcpy(&monitoredItemIP,miIP,sizeof(ipv6_addr_t));
+	}
 }
 
 void heartbeat_sender_stop(void) {

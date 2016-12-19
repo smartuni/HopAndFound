@@ -20,6 +20,7 @@ typedef enum pkg_type{
 	LOCALIZATION_REPLY,
 	CALL_FOR_HELP,
 	BIND,
+	BIND_ACK,
 	UPDATE
 } pkg_type_t;
 
@@ -56,7 +57,10 @@ typedef struct __attribute__((packed)) { //mac adr from source adr
 
 typedef struct __attribute__((packed)) {
 	uint8_t type;
-	ipv6_addr_t* mi;
 } bind_t;
+
+typedef struct __attribute__((packed)) {
+	uint8_t type;
+} bind_ack_t;
 
 #endif /* HAF_PROTOCOL_H */

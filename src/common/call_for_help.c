@@ -18,7 +18,7 @@ xtimer_t _timer_call_for_help;
 
 
 void _call_for_help_handler_task(void) {
-	printDisplayHopAndFound();
+	printDisplayHopAndFoundActive();
 }
 
 void call_for_help_handler_init(void) {

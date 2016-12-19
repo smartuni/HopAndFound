@@ -42,4 +42,7 @@ int set_netif(netif_mode_t mode, int16_t val);
 
 void get_ipv6_addr(ipv6_addr_t* addr);
 
+
+void setMonitorIP(ipv6_addr_t* monitorIP);
+ipv6_addr_t getMonitorIP(void);
 #endif

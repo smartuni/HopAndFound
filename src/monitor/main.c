@@ -22,7 +22,6 @@ int main(void){
 
 	xtimer_init();
 	haf_thread_create();
-	call_for_help_handler_init();
 	displayInit();
 
 #ifdef HAF_DEBUG
