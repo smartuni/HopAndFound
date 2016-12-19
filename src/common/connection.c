@@ -132,7 +132,7 @@ int udp_server_start(dispatcher_callback_t cb) {
 		memset(recv_buffer, 0, sizeof(recv_buffer));
 		if((res = conn_udp_recvfrom(&conn, &recv_buffer, sizeof(recv_buffer),
 									&src, &src_len, &port)) < 0) {
-			printf("[CONN] Error while receiving, error code = %d\n", res);			
+			printf("[CONN] Error while receiving, error code = %d\n", res);
 
 			// TODO error handling
         } else if(res == 0) {
@@ -156,8 +156,6 @@ int udp_server_start(dispatcher_callback_t cb) {
         }
     }
 }
-
-
 
 int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 	int res;
@@ -239,11 +237,29 @@ int set_netif(netif_mode_t mode, int16_t val){
 	return res < 0 ? res : 0;
 }
 
+/*  function get_ipv6_addr_p
+ *
+ *	Changes the Pointer of the ipv6_adr parameter through local ipv6 address
+ *
+ *	@param ipv6_adr Pointer for local ipv6 address
+ */
 void get_ipv6_addr(ipv6_addr_t* addr){
 	kernel_pid_t dev = _get_netif();
 	gnrc_ipv6_netif_t *entry = gnrc_ipv6_netif_get(dev);
 
     memcpy(addr, &entry->addrs[1].addr, sizeof(ipv6_addr_t));
+}
+
+/*  function print_ipv6_string
+ *
+ *	Prints the ipv6 address in the parameter
+ *
+ *	@param ipv6_adr any ipv6 address
+ */
+void print_ipv6_string(ipv6_addr_t* ipv6_addr) {
+	char src_str[IPV6_ADDR_MAX_STR_LEN];
+	ipv6_addr_to_str(src_str, ipv6_addr, IPV6_ADDR_MAX_STR_LEN);
+	printf("%s", src_str);
 }
 
 void setMonitorIP(ipv6_addr_t* monitorIP){

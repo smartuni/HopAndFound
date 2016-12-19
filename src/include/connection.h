@@ -40,9 +40,9 @@ int udp_server_start(dispatcher_callback_t cb);
 */
 int set_netif(netif_mode_t mode, int16_t val);
 
-void get_ipv6_addr(ipv6_addr_t* addr);
-
-
 void setMonitorIP(ipv6_addr_t* monitorIP);
 ipv6_addr_t* getMonitorIP(void);
+void get_ipv6_addr(ipv6_addr_t* addr);
+void print_ipv6_string(ipv6_addr_t* ipv6_addr);
+
 #endif

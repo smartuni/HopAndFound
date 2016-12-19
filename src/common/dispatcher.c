@@ -28,7 +28,7 @@ void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 #endif
 
 			handle_heartbeat();
-			
+
 			break;
 		}
 		case LOCALIZATION_REPLY: {
@@ -40,16 +40,16 @@ void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			printf("type: %u\n", localization_reply.type);
 			printf("node_id: %u\n", localization_reply.node_id);
 #endif
-			
+
 			handle_localization_reply(&localization_reply);
-			
+
 			break;
 		}
-		
+
 		case BIND_ACK: {
 			heartbeat_timeout_start(); // Start timer when bind was received from monitor
 			setMonitorIP(address); //set monitorID in connection.c
-			
+
 			break;
 		}
 		default: {
@@ -75,12 +75,12 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 				printf("seq_nr: %lu\n", call_for_help.seq_nr);
 				printf("mi_id: %u\n", call_for_help.mi_id);
 				printf("ttl: %u\n", call_for_help.ttl);
-				printf("dest_adr: %u\n", call_for_help.dest_adr);
+				printf("dest_adr: "); print_ipv6_string(&call_for_help.dest_adr); printf("\n");
 				for(int i = 0; i < MAX_NODES; i++) {
 					printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
 				}
 #endif
-				
+
 #ifdef TEST_PRESENTATION
 				start_LED_blink(LED_RED, 3);
 #endif /* TEST_PRESENTATION */
@@ -97,29 +97,31 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			handle_bind(address);
 			break;
 		}
-		
-		case UPDATE: {
+
+/*		case UPDATE: {
 			update_t update;
-			uint8_t source_adr;
+			ipv6_addr_t source_adr;
 			memcpy(&update, recv_buffer, sizeof(update));
 			source_adr = update.source_adr; //DATENTYP PRÜFEN
 #ifdef HAF_DEBUG_DISPATCH
+			char source_adr_string[IPV6_ADDR_MAX_STR_LEN];
+			ipv6_addr_to_str(source_adr_string, &source_adr, IPV6_ADDR_MAX_STR_LEN);
 			puts("------------------------------");
-			printf("UPDATE von MAC-Adr %d received.\n", source_adr);
+			printf("UPDATE von IP-Adr %s received.\n", source_adr_string);
 			printf("type: %u\n", update.type);
-			/*for(int i = 0; i < MAX_DEVICES; i++) {
-				printf("routing_tbl[%d].mac_adr: %u\n", i, update.routing_tbl[i].mac_adr);
-				printf("routing_tbl[%d].hops: %u\n", i, update.routing_tbl[i].hops);
-				printf("routing_tbl[%d].next_hop_adr: %u\n", i, update.routing_tbl[i].next_hop_adr);
-				printf("routing_tbl[%d].exp_time: %" PRIu32 "\n", i, update.routing_tbl[i].exp_time);
-			}*/
+			//for(int i = 0; i < MAX_DEVICES; i++) {
+			//	printf("routing_tbl[%d].ip_addr: %u\n", i, update.routing_tbl[i].ip_addr);
+			//	printf("routing_tbl[%d].hops: %u\n", i, update.routing_tbl[i].hops);
+			//	printf("routing_tbl[%d].next_hop_adr: %u\n", i, update.routing_tbl[i].next_hop_adr);
+			//	printf("routing_tbl[%d].exp_time: %" PRIu32 "\n", i, update.routing_tbl[i].exp_time);
+			//}
 #endif
-			
+
 			handle_update(&update, source_adr);
-			
+
 
 			break;
-		}
+		}*/
 		default: {
 #ifdef HAF_DEBUG_DISPATCH
 			puts("------------------------------");
@@ -140,13 +142,13 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			puts("LOCALIZATION_REQUEST received.");
 			printf("type: %u\n", localization_request.type);
 #endif
-			
+
 #ifdef TEST_PRESENTATION
 			start_LED_blink(LED_BLUE, 3);
 #endif /* TEST_PRESENTATION */
-			
-			handle_localization_request(address);
-			
+
+			handle_localization_request(address, &localization_request.monitor);
+
 			break;
 		}
 #ifdef TEST_PRESENTATION
@@ -166,9 +168,9 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 #endif
 				break;
 			}
-			
+
 			handle_localization_reply(&localization_reply);
-			
+
 			break;
 		}
 #endif /* TEST_PRESENTATION */
@@ -182,34 +184,38 @@ void dispatch_node(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			printf("seq_nr: %lu\n", call_for_help.seq_nr);
 			printf("mi_id: %u\n", call_for_help.mi_id);
 			printf("ttl: %u\n", call_for_help.ttl);
-			printf("dest_adr: %u\n", call_for_help.dest_adr);
+			printf("dest_adr: "); print_ipv6_string(&call_for_help.dest_adr); printf("\n");
+			//printf("dest_adr: %u\n", call_for_help.dest_adr);
 			for(int i = 0; i < MAX_NODES; i++) {
 				printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
 			}
 #endif
 			if ( checkroute(&call_for_help) ) handle_call_for_help(&call_for_help, NODE);
-			
+
 			break;
 		}
 		case UPDATE: {
 			update_t update;
-			uint8_t source_adr;
+			ipv6_addr_t source_adr;
 			memcpy(&update, recv_buffer, sizeof(update));
 			source_adr = update.source_adr; //DATENTYP PRÜFEN
 #ifdef HAF_DEBUG_DISPATCH
+			char source_adr_string[IPV6_ADDR_MAX_STR_LEN];
+			ipv6_addr_to_str(source_adr_string, &source_adr, IPV6_ADDR_MAX_STR_LEN);
 			puts("------------------------------");
-			printf("UPDATE von MAC-Adr %d received.\n", source_adr);
+			printf("UPDATE von IP-Adr %s received.\n", source_adr_string);
+			//printf("UPDATE von IP-Adr %d received.\n", source_adr);
 			printf("type: %u\n", update.type);
 			/*for(int i = 0; i < MAX_DEVICES; i++) {
-				printf("routing_tbl[%d].mac_adr: %u\n", i, update.routing_tbl[i].mac_adr);
+				printf("routing_tbl[%d].ip_addr: %u\n", i, update.routing_tbl[i].ip_addr);
 				printf("routing_tbl[%d].hops: %u\n", i, update.routing_tbl[i].hops);
 				printf("routing_tbl[%d].next_hop_adr: %u\n", i, update.routing_tbl[i].next_hop_adr);
 				printf("routing_tbl[%d].exp_time: %" PRIu32 "\n", i, update.routing_tbl[i].exp_time);
 			}*/
 #endif
-			
+
 			handle_update(&update, source_adr);
-			
+
 			break;
 		}
 		default: {

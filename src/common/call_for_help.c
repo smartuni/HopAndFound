@@ -6,7 +6,7 @@
 #include "console_map.h"
 #include "localization_reply.h"
 #include "xtimer.h"
-
+#include "routing.h"
 
 #define CALL_FOR_HELP_TIME_USEC		(15000000)
 
@@ -16,37 +16,56 @@ static int seq_nr_recv = 0;
 
 xtimer_t _timer_call_for_help;
 
-
+/*  function _call_for_help_handler_task
+ *
+ *	Calls the printDisplayHopAndFound function
+ *
+ */
 void _call_for_help_handler_task(void) {
 	printDisplayHopAndFoundActive();
 	puts("call_for_help_timeout");
-	
-}
 
+}
+/*  function call_for_help_handler_init
+ *
+ *	Initializes the timer for sending the Call For Help message
+ *
+ */
 void call_for_help_handler_init(void) {
 	puts("call_for_help_handler_init");
     _timer_call_for_help.target = 0;
     _timer_call_for_help.long_target = 0;
     _timer_call_for_help.callback = (void*)_call_for_help_handler_task;
 }
-
+/*  function send_call_for_help
+ *
+ *	Sends the Call For Help from the monitor through the node
+ *
+ */
 void send_call_for_help(void) {
 	call_for_help_t pkg;
-	pkg.dest_adr = MONITOR_ID;
-	pkg.ttl = 99;
+	ipv6_addr_t routed_dst;
+	memcpy(&pkg.dest_adr, getMonitorIP(), sizeof(ipv6_addr_t));
 	pkg.type = CALL_FOR_HELP;
 
 	if ( seq_nr_send >= 1000000 ) { //Abfrage im Empfang beruecksichtigen
 		seq_nr_send = 0;
 	}
-	
+
 	pkg.seq_nr = seq_nr_send;
 	seq_nr_send++;
-		
+
 	pkg.mi_id = MONITORED_ITEM_ID;
 	memcpy(&pkg.node_list, get_node_list(), MAX_NODES);
-	udp_send(&pkg, sizeof(pkg), NULL);	
-	
+	get_hops_p(&pkg.ttl);
+	pkg.ttl++;
+	get_route_p(&routed_dst);
+	udp_send(&pkg, sizeof(pkg), &routed_dst);
+	printf("CALL FOR HELP SENT TO "); print_ipv6_string(&routed_dst); printf("\n");
+	printf("CALL FOR HELP DEST IP: "); print_ipv6_string(&pkg.dest_adr); printf("\n");
+	//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr); uralt
+	//udp_send(&pkg, sizeof(pkg), NULL);	alt
+	clear_route_list();
 /*#ifdef HAF_DEBUG_NODE_MAP
 	printConsoleMap(get_node_list(), MAX_NODES);
 #endif*/
@@ -54,8 +73,12 @@ void send_call_for_help(void) {
 	resetNodeList();
 }
 
-// Fuer den ersten Milestone wird die mi_id nicht mit ausgewertet
-//Seq_nr_recv abfrage fuer limit erreicht (1000000) fehlt
+/*  function forward_call_for_help
+ *
+ *	Forwards the Call For Help through the next node or the monitor [the hop address]
+ *
+ *	@param p Call For Help message
+ */
 void forward_call_for_help(call_for_help_t* p) {
 	call_for_help_t pkg;
 	if (p->seq_nr > seq_nr_recv){
@@ -65,7 +88,8 @@ void forward_call_for_help(call_for_help_t* p) {
 		printf("seq_nr: %lu\n", p->seq_nr);
 		printf("mi_id: %u\n", p->mi_id);
 		printf("ttl: %u\n", p->ttl);
-		printf("dest_adr: %u\n", p->dest_adr);
+		printf("dest_adr: "); print_ipv6_string(&p->dest_adr); printf("\n");
+		//printf("dest_adr: %u\n", p->dest_adr);
 #endif
 		pkg.type = p->type;
 		pkg.seq_nr = p->seq_nr;
@@ -79,11 +103,19 @@ void forward_call_for_help(call_for_help_t* p) {
 #ifdef TEST_PRESENTATION
 		p->node_list_path[NODE_ID] = 1;
 #endif /* TEST_PRESENTATION */
-		udp_send(&pkg, sizeof(pkg), NULL);
+		sendpkg(&pkg);
+		//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr);
+		//udp_send(&pkg, sizeof(pkg), NULL);
 		seq_nr_recv = p->seq_nr;
 	}
 }
-
+/*  function forward_call_for_help
+ *
+ *	Forwards the Call For Help through the next node or the monitor [the hop address]
+ *
+ *	@param p Call For Help message
+ *	@h device type
+ */
 void handle_call_for_help(call_for_help_t* p, handler_t h) {
 	if ( h == NODE ) {
 		forward_call_for_help(p);
@@ -94,7 +126,7 @@ void handle_call_for_help(call_for_help_t* p, handler_t h) {
 		    xtimer_set(&_timer_call_for_help, CALL_FOR_HELP_TIME_USEC);
 #ifdef HAF_DEBUG_DONT_PRINT_EMPTY_MAP
 			int i;
-			
+
 			for(i = 0; i < MAX_NODES; i++){
 				if (p->node_list[i] == 1){
 					printConsoleMap(p->node_list, MAX_NODES);

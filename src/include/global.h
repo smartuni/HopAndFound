@@ -2,14 +2,10 @@
 #define GLOBAL_H
 
 #define NODE_ID (4)
-#define DEV_MAC_ADR (NODE_ID+1)
-
 
 #define MONITORED_ITEM_ID (7)
-#define MONITOR_ID (8)
 #define MAX_NODES (6)
 #define MAX_DEVICES (8)
-
 
 #define SIGNAL_STRENGTH_MONITOR (-35)
 #define SIGNAL_STRENGTH_MONITORED_ITEM (-27)
