@@ -50,9 +50,14 @@ void _update(void){
 }
 
 void _routing_handler(void){
-	thread_create(routing_stack, sizeof(routing_stack),
+	if (haf_queue_enqueue((thread_function_t) _update) == -1){
+#ifdef HAF_DEBUG
+		printf("_routing_handler:: too many elements in thread queue.\n");
+#endif /* HAF_DEBUG */
+	}
+	/*thread_create(routing_stack, sizeof(routing_stack),
 			ROUTING_THREAD_PRIORITY, THREAD_CREATE_STACKTEST,
-			(void *) _update, NULL, "routing_callback");
+			(void *) _update, NULL, "routing_callback");*/
 }
 
 void init(void) { //muss in der main aufgerufen werden
