@@ -2,6 +2,7 @@
 #define CALL_FOR_HELP_H
 
 #include "HAF_protocol.h"
+#include "global.h"
 #include "connection.h"
 
 typedef enum handler{

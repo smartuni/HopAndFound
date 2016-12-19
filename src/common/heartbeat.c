@@ -4,12 +4,12 @@
 
 #include "heartbeat.h"
 #include "HAF_protocol.h"
-#include "connection.h"
 #include "localization_request.h"
 #include "global.h"
 #include "net/ipv6/addr.h"
 #include "haf_LED.h"
 #include "thread.h"
+#include "connection.h"
 #include "haf_queue.h"
 
 
@@ -99,6 +99,7 @@ void _heartbeat_send_task(void) {
 	ret_pkg.type = HEARTBEAT;
 	udp_send(&ret_pkg, sizeof(ret_pkg), &monitoredItemIP);
 	
+
 #ifdef HAF_DEBUG
 	puts("HEARTBEAT sent.");
 #endif /* HAF_DEBUG */

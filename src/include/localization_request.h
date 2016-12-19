@@ -2,6 +2,7 @@
 #define LOCALIZATION_REQUEST_H
 
 #include "HAF_protocol.h"
+#include "global.h"
 #include "connection.h"
 
 typedef void (*localization_request_cb_t)(void);
