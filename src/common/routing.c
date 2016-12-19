@@ -7,16 +7,10 @@
 #include "routing.h"
 #include "HAF_protocol.h"
 #include "connection.h"
+#include "haf_queue.h"
 
 #define TIMEOUT 9000000 //10sek.
 #define EXP_TIMEOUT 30000000 //60sek.
-
-//Priority of thread for handling task after waiting period for
-//localization_replies ran out
-#define ROUTING_THREAD_PRIORITY THREAD_PRIORITY_MAIN + 2
-
-//Stack for thread to handle task after _timer_localization_request interrupts
-char routing_stack[THREAD_STACKSIZE_MAIN];
 
 
 xtimer_t timer_update;
@@ -50,14 +44,13 @@ void _update(void){
 }
 
 void _routing_handler(void){
+
 	if (haf_queue_enqueue((thread_function_t) _update) == -1){
 #ifdef HAF_DEBUG
 		printf("_routing_handler:: too many elements in thread queue.\n");
 #endif /* HAF_DEBUG */
 	}
-	/*thread_create(routing_stack, sizeof(routing_stack),
-			ROUTING_THREAD_PRIORITY, THREAD_CREATE_STACKTEST,
-			(void *) _update, NULL, "routing_callback");*/
+
 }
 
 void init(void) { //muss in der main aufgerufen werden

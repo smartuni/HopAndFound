@@ -26,7 +26,7 @@ void send_bind_ack(ipv6_addr_t* miIP){
 void handle_bind(ipv6_addr_t* miIP) {
 	//Start heartbeat_send 
 	printDisplayHopAndFoundActive(); // Display Hop and Found active!
-	//call_for_help_handler_init();
+	call_for_help_handler_init();
 	heartbeat_sender_init(miIP); // Start to send hearbeat
 	send_bind_ack(miIP);
 }

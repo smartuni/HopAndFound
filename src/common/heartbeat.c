@@ -29,7 +29,7 @@ char heartbeat_send_stack[THREAD_STACKSIZE_MAIN];
 //Stack for thread to handle heartbeat timeout after timer_recv interrupts	
 char heartbeat_timeout_stack[THREAD_STACKSIZE_MAIN];
 
-ipv6_addr_t monitoredItemIP;
+static ipv6_addr_t monitoredItemIP = IPV6_ADDR_UNSPECIFIED;
 
 
 bool heartbeatActive;

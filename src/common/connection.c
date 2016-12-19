@@ -24,7 +24,7 @@
 
 static kernel_pid_t netif_dev = -1;
 
-ipv6_addr_t monitor_ip;
+static ipv6_addr_t monitor_ip = IPV6_ADDR_UNSPECIFIED;
 
 #ifdef HAF_USE_SOCK_UDP
 int udp_server_start(dispatcher_callback_t cb) {
@@ -250,6 +250,6 @@ void setMonitorIP(ipv6_addr_t* monitorIP){
 	memcpy(&monitor_ip,monitorIP,sizeof(ipv6_addr_t));
 }
 
-ipv6_addr_t getMonitorIP(void){
-	return monitor_ip;
+ipv6_addr_t* getMonitorIP(void){
+	return &monitor_ip;
 }
