@@ -8,7 +8,7 @@ Hop And Found consists of three types of components:
 
 * **monitor:**            Component with a display which the user carries. It signals the user if the device is lost.
 * **monitored item:**     Component which is placed with the item that is monitored.
-* **node:**               Stationary component which is placed at known positions in an area for forwardong messages.
+* **node:**               Stationary component which is placed at known positions in an area for forwarding messages.
 
 ## Hardware ##
 
@@ -20,7 +20,7 @@ The display of the monitor is the Nokia pcd8544.
 * **heartbeat:**                Sent from the monitor to the monitored item to ensure the distance between the two isn't too great.
 * **localization request:**     Sent to the nodes to determine which nodes are in range.
 * **localization reply:**       Answer to the localization request to confirm node is in range.
-* **call for help:**            Sent by the monitored item or forwarded by the nodes. Contains information about the whereabouts of the monitored item.
+* **call for help:**            Sent by the monitored item and forwarded by the nodes. Contains information about the whereabouts of the monitored item.
 
 ## I/O ##
 
@@ -32,7 +32,7 @@ The display of the monitor is the Nokia pcd8544.
 #### monitored item ####
 
 * LED blinks red if heartbeat is not received in time.
-* User button turns links monitored item to monitor when close to each other.
+* User button links monitored item to monitor when close to each other.
 
 #### node ####
 
@@ -68,7 +68,7 @@ In "src/include/globals.h":
 
 ## Procedure when monitored item goes missing ##
 
-* Monitored item moves too far away from the monitor and thereby doesnt receive any more heartbeats.
+* Monitored item moves too far away from the monitor and thereby doesn't receive any more heartbeats.
 * Monitored item sends a localization request.
 * All nodes in range answer with a localization request.
 * Monitored item sends a call for help.
