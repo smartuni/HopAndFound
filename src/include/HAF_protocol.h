@@ -2,7 +2,7 @@
 #define HAF_PROTOCOL_H
 
 #include <stdint.h>
-
+#include <net/gnrc/ipv6/netif.h>
 #include "global.h"
 
 
@@ -19,6 +19,8 @@ typedef enum pkg_type{
 	LOCALIZATION_REQUEST,
 	LOCALIZATION_REPLY,
 	CALL_FOR_HELP,
+	BIND,
+	BIND_ACK,
 	UPDATE
 } pkg_type_t;
 
@@ -52,5 +54,13 @@ typedef struct __attribute__((packed)) { //mac adr from source adr
 	uint8_t source_adr;
 	routing_tbl_t routing_tbl[MAX_DEVICES];
 } update_t;
+
+typedef struct __attribute__((packed)) {
+	uint8_t type;
+} bind_t;
+
+typedef struct __attribute__((packed)) {
+	uint8_t type;
+} bind_ack_t;
 
 #endif /* HAF_PROTOCOL_H */

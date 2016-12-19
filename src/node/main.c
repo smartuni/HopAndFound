@@ -27,8 +27,10 @@ int main(void){
 #endif
 
 	xtimer_init();
+
 	init();
 	haf_thread_create();
+
 
 #ifdef TEST_PRESENTATION
 	init_LED();

@@ -23,6 +23,15 @@ xtimer_t timer_recv;
 xtimer_t timer_send;
 
 
+
+//Stack for thread to send after timer_send interrupts
+char heartbeat_send_stack[THREAD_STACKSIZE_MAIN];
+//Stack for thread to handle heartbeat timeout after timer_recv interrupts	
+char heartbeat_timeout_stack[THREAD_STACKSIZE_MAIN];
+
+static ipv6_addr_t monitoredItemIP = IPV6_ADDR_UNSPECIFIED;
+
+
 bool heartbeatActive;
 
 bool getHeartbeatActive(void) {
@@ -64,6 +73,9 @@ void heartbeat_timeout_init(void) {
     timer_recv.target = 0;
     timer_recv.long_target = 0;
     timer_recv.callback = (void*) _heartbeat_timeout_handler;
+}
+
+void heartbeat_timeout_start(void){
 	xtimer_set(&timer_recv, HEARTBEAT_TIMEOUT_USEC);
 }
 
@@ -82,12 +94,10 @@ void _heartbeat_send_task(void) {
 	if(heartbeatActive) {
 #endif /* TEST_PRESENTATION */
 
-	ipv6_addr_t d;
-	ipv6_addr_from_str(&d, MONITORED_ITEM_IP);
-
 	heartbeat_t ret_pkg;
 	ret_pkg.type = HEARTBEAT;
-	udp_send(&ret_pkg, sizeof(ret_pkg), &d);
+	udp_send(&ret_pkg, sizeof(ret_pkg), &monitoredItemIP);
+	
 
 #ifdef HAF_DEBUG
 	puts("HEARTBEAT sent.");
@@ -108,12 +118,20 @@ void _heartbeat_send_handler(void){
 	}
 }
 
-void heartbeat_sender_init(void) {
-	heartbeatActive = true;
-    timer_send.target = 0;
-    timer_send.long_target = 0;
-    timer_send.callback = (void*) _heartbeat_send_handler;
-	xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
+void heartbeat_sender_init(ipv6_addr_t* miIP) {
+	puts("heartbeat_sender_init");
+	if(!heartbeatActive){
+		heartbeatActive = true;
+		timer_send.target = 0;
+		timer_send.long_target = 0;
+		puts("heartbeat_sender_init2");
+
+	
+		timer_send.callback = (void*) _heartbeat_send_handler;
+		xtimer_set(&timer_send, HEARTBEAT_TIME_USEC);
+		
+		memcpy(&monitoredItemIP,miIP,sizeof(ipv6_addr_t));
+	}
 }
 
 void heartbeat_sender_stop(void) {

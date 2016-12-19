@@ -10,6 +10,11 @@
 #include "heartbeat.h"
 #include "routing.h"
 #include "haf_LED.h"
+#include "display.h"
+#include "bind.h"
+
+int monitoredItem_bound = 0;
+
 
 void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 	switch(recv_buffer[0]) {
@@ -40,6 +45,13 @@ void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			
 			break;
 		}
+		
+		case BIND_ACK: {
+			heartbeat_timeout_start(); // Start timer when bind was received from monitor
+			setMonitorIP(address); //set monitorID in connection.c
+			
+			break;
+		}
 		default: {
 #ifdef HAF_DEBUG_DISPATCH
 			puts("------------------------------");
@@ -53,29 +65,39 @@ void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 	switch(recv_buffer[0]) {
 		case CALL_FOR_HELP: {
-			call_for_help_t call_for_help;
-			memcpy(&call_for_help, recv_buffer, sizeof(call_for_help));
+			if(monitoredItem_bound){
+				call_for_help_t call_for_help;
+				memcpy(&call_for_help, recv_buffer, sizeof(call_for_help));
 #ifdef HAF_DEBUG_DISPATCH
-			puts("------------------------------");
-			puts("CALL_FOR_HELP received.");
-			printf("type: %u\n", call_for_help.type);
-			printf("seq_nr: %lu\n", call_for_help.seq_nr);
-			printf("mi_id: %u\n", call_for_help.mi_id);
-			printf("ttl: %u\n", call_for_help.ttl);
-			printf("dest_adr: %u\n", call_for_help.dest_adr);
-			for(int i = 0; i < MAX_NODES; i++) {
-				printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
-			}
+				puts("------------------------------");
+				puts("CALL_FOR_HELP received.");
+				printf("type: %u\n", call_for_help.type);
+				printf("seq_nr: %lu\n", call_for_help.seq_nr);
+				printf("mi_id: %u\n", call_for_help.mi_id);
+				printf("ttl: %u\n", call_for_help.ttl);
+				printf("dest_adr: %u\n", call_for_help.dest_adr);
+				for(int i = 0; i < MAX_NODES; i++) {
+					printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
+				}
 #endif
-			
+				
 #ifdef TEST_PRESENTATION
-			start_LED_blink(LED_RED, 3);
+				start_LED_blink(LED_RED, 3);
 #endif /* TEST_PRESENTATION */
 
-			handle_call_for_help(&call_for_help, MONITOR);
-			
+				handle_call_for_help(&call_for_help, MONITOR);
+			}
 			break;
 		}
+
+		case BIND: {
+			printf("Bind received \n");
+			monitoredItem_bound=1;
+
+			handle_bind(address);
+			break;
+		}
+		
 		case UPDATE: {
 			update_t update;
 			uint8_t source_adr;
@@ -95,6 +117,7 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			
 			handle_update(&update, source_adr);
 			
+
 			break;
 		}
 		default: {

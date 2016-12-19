@@ -13,6 +13,7 @@
 #include "connection.h"
 #include "haf_thread.h"
 
+
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
 	set_netif(POWER, SIGNAL_STRENGTH_MONITORED_ITEM);
@@ -41,9 +42,13 @@ int main(void){
 	haf_button_init(haf_button_cb_monitored_item);
 	localization_request_init(localization_request_cb_monitored_item);
 #endif
-
 	heartbeat_timeout_init();
+
+	//heartbeat_timeout_init(); // Move to bind.c  handle_bind(); 
 	udp_server_start((dispatcher_callback_t) dispatch_monitored_item);
 
 	return 0;
 }
+
+
+

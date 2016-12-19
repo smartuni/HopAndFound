@@ -117,6 +117,13 @@ void printMonitoredItemInRange(void){
 
 void printDisplayHopAndFound(void){
 	 pcd8544_clear(&dev);
+
+	 pcd8544_write_s(&dev,1,2,"Hop And Found"); 
+}
+
+void printDisplayHopAndFoundActive(void){
+	 pcd8544_clear(&dev);
+
 	 pcd8544_write_s(&dev,0,1,"Hop And Found");
      pcd8544_write_s(&dev,3,3,"active!");  
 }
@@ -167,6 +174,7 @@ void printDisplayMapString(uint8_t* nodes){
    
    printMonitoredItemLost();
 }
+
 
 void printDisplayMapStringPath(uint8_t* nodes,uint8_t* node_list_path){
    pcd8544_clear(&dev);
@@ -237,6 +245,7 @@ void printDisplayMapStringPath(uint8_t* nodes,uint8_t* node_list_path){
 
 void displayInit(void){
 	printf("%d , %d\n",TEST_PCD8544_CS,TEST_PCD8544_MODE);
+
     printf("Initializing PCD8544 LCD at SPI_%i... ", TEST_PCD8544_SPI);//TEST_X defined in MAKEFILE
     if (pcd8544_init(&dev, TEST_PCD8544_SPI, TEST_PCD8544_CS,
                      TEST_PCD8544_RESET, TEST_PCD8544_MODE) != 0) {

@@ -14,6 +14,7 @@
 #include "connection.h"
 #include "haf_thread.h"
 
+
 int main(void){
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
 	set_netif(POWER, SIGNAL_STRENGTH_MONITOR);
@@ -21,7 +22,6 @@ int main(void){
 
 	xtimer_init();
 	haf_thread_create();
-	call_for_help_handler_init();
 	displayInit();
 
 #ifdef HAF_DEBUG
@@ -41,7 +41,6 @@ int main(void){
 
 	init();
 	printDisplayHopAndFound();
-	heartbeat_sender_init();
 	udp_server_start((dispatcher_callback_t) dispatch_monitor);
 
 	return 0;

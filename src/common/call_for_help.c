@@ -2,27 +2,32 @@
 #include <string.h>
 #include "global.h"
 #include "call_for_help.h"
+#include "display.h"
 #include "console_map.h"
 #include "localization_reply.h"
 #include "xtimer.h"
-#include "display.h"
+
 
 #define CALL_FOR_HELP_TIME_USEC		(15000000)
 
 static int seq_nr_send = 1;
 static int seq_nr_recv = 0;
 
+
 xtimer_t _timer_call_for_help;
 
+
 void _call_for_help_handler_task(void) {
-	printDisplayHopAndFound();
+	printDisplayHopAndFoundActive();
+	puts("call_for_help_timeout");
+	
 }
 
 void call_for_help_handler_init(void) {
+	puts("call_for_help_handler_init");
     _timer_call_for_help.target = 0;
     _timer_call_for_help.long_target = 0;
     _timer_call_for_help.callback = (void*)_call_for_help_handler_task;
-	xtimer_set(&_timer_call_for_help, CALL_FOR_HELP_TIME_USEC);
 }
 
 void send_call_for_help(void) {
