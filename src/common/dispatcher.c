@@ -63,7 +63,6 @@ void dispatch_monitor(uint8_t recv_buffer[], ipv6_addr_t* address) {
 			printf("mi_id: %u\n", call_for_help.mi_id);
 			printf("ttl: %u\n", call_for_help.ttl);
 			printf("dest_adr: "); print_ipv6_string(&call_for_help.dest_adr); printf("\n");
-			//printf("dest_adr: %u\n", call_for_help.dest_adr);
 			for(int i = 0; i < MAX_NODES; i++) {
 				printf("node_list[%d]: %u\n", i, call_for_help.node_list[i]);
 			}

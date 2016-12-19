@@ -15,22 +15,34 @@ static int seq_nr_recv = 0;
 
 xtimer_t _timer_call_for_help;
 
+/*  function _call_for_help_handler_task
+ *	
+ *	Calls the printDisplayHopAndFound function
+ *	
+ */
 void _call_for_help_handler_task(void) {
 	printDisplayHopAndFound();
 }
-
+/*  function call_for_help_handler_init
+ *	
+ *	Initializes the timer for sending the Call For Help message
+ *	
+ */
 void call_for_help_handler_init(void) {
     _timer_call_for_help.target = 0;
     _timer_call_for_help.long_target = 0;
     _timer_call_for_help.callback = (void*)_call_for_help_handler_task;
 	xtimer_set(&_timer_call_for_help, CALL_FOR_HELP_TIME_USEC);
 }
-
+/*  function send_call_for_help
+ *	
+ *	Sends the Call For Help from the monitor through the node
+ *	
+ */
 void send_call_for_help(void) {
 	call_for_help_t pkg;
 	ipv6_addr_t routed_dst;
 	ipv6_addr_from_str(&pkg.dest_adr, MONITOR_IP);
-	//pkg.dest_adr = MONITOR_IP;
 	pkg.type = CALL_FOR_HELP;
 
 	if ( seq_nr_send >= 1000000 ) { //Abfrage im Empfang beruecksichtigen
@@ -58,8 +70,12 @@ void send_call_for_help(void) {
 	resetNodeList();
 }
 
-// Fuer den ersten Milestone wird die mi_id nicht mit ausgewertet
-//Seq_nr_recv abfrage fuer limit erreicht (1000000) fehlt
+/*  function forward_call_for_help
+ *	
+ *	Forwards the Call For Help through the next node or the monitor [the hop address]
+ *	
+ *	@param p Call For Help message
+ */
 void forward_call_for_help(call_for_help_t* p) {
 	call_for_help_t pkg;
 	if (p->seq_nr > seq_nr_recv){
@@ -84,16 +100,19 @@ void forward_call_for_help(call_for_help_t* p) {
 #ifdef TEST_PRESENTATION
 		p->node_list_path[NODE_ID] = 1;
 #endif /* TEST_PRESENTATION */
-		//---------------------------------------------------neu
 		sendpkg(&pkg);
-		//-------------------------------------------------------neu
-		
 		//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr);
-		//udp_send(&pkg, sizeof(pkg), NULL); -------------------------neu
+		//udp_send(&pkg, sizeof(pkg), NULL);
 		seq_nr_recv = p->seq_nr;
 	}
 }
-
+/*  function forward_call_for_help
+ *	
+ *	Forwards the Call For Help through the next node or the monitor [the hop address]
+ *	
+ *	@param p Call For Help message
+ *	@h device type
+ */
 void handle_call_for_help(call_for_help_t* p, handler_t h) {
 	if ( h == NODE ) {
 		forward_call_for_help(p);

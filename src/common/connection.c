@@ -155,14 +155,24 @@ ipv6_addr_t* get_ipv6_addr(void){
     
     return addr;
 }
-
+/*  function get_ipv6_addr_p
+ *	
+ *	Changes the Pointer of the ipv6_adr parameter through local ipv6 address
+ *
+ *	@param ipv6_adr Pointer for local ipv6 address
+ */
 void get_ipv6_addr_p(ipv6_addr_t* ipv6_adr){
 	kernel_pid_t dev = _get_netif();
 	gnrc_ipv6_netif_t *entry = gnrc_ipv6_netif_get(dev);
     
     memcpy(ipv6_adr, &entry->addrs[1].addr, sizeof(ipv6_addr_t));
 }
-
+/*  function print_ipv6_string
+ *	
+ *	Prints the ipv6 address in the parameter
+ *
+ *	@param ipv6_adr any ipv6 address
+ */
 void print_ipv6_string(ipv6_addr_t* ipv6_addr) {
 	char src_str[IPV6_ADDR_MAX_STR_LEN];
 	ipv6_addr_to_str(src_str, ipv6_addr, IPV6_ADDR_MAX_STR_LEN);

@@ -24,15 +24,21 @@ void send_localization_reply(ipv6_addr_t* dst, ipv6_addr_t* monitor){
  
 void handle_localization_reply(localization_reply_t* p){
 	uint8_t node_id = p->node_id;
+#ifdef HAF_DEBUG
 	printf("LOC REPLY EMPFANGEN - NODE ADR: "); print_ipv6_string(&p->node_adr); printf("\n");
 	printf("LOC REPLY EMPFANGEN - HOPS: %d\n", p->hops);
+#endif
 	if (node_id < 0 || node_id >= MAX_NODES){
+#ifdef HAF_DEBUG
 		printf("ERROR: received node id %d in handle_localization_reply\n", node_id);
+#endif
 		return;
 	}
 	if ( p->hops != 0 ) {
 		if ( route_list.hops == 0 || p->hops < route_list.hops) {
+#ifdef HAF_DEBUG
 			printf("LOC REPLY ADRESSE HINZUGEFUEGT: "); print_ipv6_string(&p->node_adr); printf("\n");
+#endif
 			route_list.node_adr = p->node_adr;
 		}		
 	}
