@@ -19,13 +19,15 @@ xtimer_t _timer_call_for_help;
 
 void _call_for_help_handler_task(void) {
 	printDisplayHopAndFoundActive();
+	puts("call_for_help_timeout");
+	
 }
 
 void call_for_help_handler_init(void) {
+	puts("call_for_help_handler_init");
     _timer_call_for_help.target = 0;
     _timer_call_for_help.long_target = 0;
     _timer_call_for_help.callback = (void*)_call_for_help_handler_task;
-	xtimer_set(&_timer_call_for_help, CALL_FOR_HELP_TIME_USEC);
 }
 
 void send_call_for_help(void) {

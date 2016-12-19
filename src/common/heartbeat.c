@@ -73,6 +73,9 @@ void heartbeat_timeout_init(void) {
     timer_recv.target = 0;
     timer_recv.long_target = 0;
     timer_recv.callback = (void*) _heartbeat_timeout_handler;
+}
+
+void heart_timeout_start(void){
 	xtimer_set(&timer_recv, HEARTBEAT_TIMEOUT_USEC);
 }
 

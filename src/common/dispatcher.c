@@ -47,7 +47,7 @@ void dispatch_monitored_item(uint8_t recv_buffer[], ipv6_addr_t* address) {
 		}
 		
 		case BIND_ACK: {
-			heartbeat_timeout_init(); // Start timer when bind was received from monitor
+			heartbeat_timeout_start(); // Start timer when bind was received from monitor
 			//setMonitorIP(address); //set monitorID in connection.c
 			
 			break;
