@@ -46,6 +46,9 @@ void call_for_help_handler_init(void) {
 void send_call_for_help(void) {
 	call_for_help_t pkg;
 	ipv6_addr_t routed_dst;
+
+	bzero(&pkg, sizeof(call_for_help_t));
+
 	memcpy(&pkg.dest_adr, getMonitorIP(), sizeof(ipv6_addr_t));
 	pkg.type = CALL_FOR_HELP;
 
