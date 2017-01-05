@@ -23,6 +23,16 @@ In "src/include/global.h":
 
 #### monitor ####
 
+* Connect the Nokia pcd8544 display (display -> board):
+ * GND -> GND1
+ * VCC -> P5V_USB
+ * CLK -> D13 (PTC5)
+ * DIN -> D11 (PTC6)
+ * D/C -> D6 (PTA2)
+ * CS --> D10 (PTC4)
+ * RST -> D7 (PTA1)
+ * LED -> P3V3
+
 * Go into "src/monitor/" and compile and flash.
 
 #### monitored item ####
