@@ -238,21 +238,13 @@ bool checkroute(call_for_help_t* p) {
  */
 void sendpkg(call_for_help_t* p) {
 	int failure,sent = 0;
-	call_for_help_t pkg;
-	pkg.type = p->type;
-	pkg.seq_nr = p->seq_nr;
-	pkg.mi_id = p->mi_id;
-	for(int i = 0; i < MAX_NODES; i++) {
-		pkg.node_list[i] = p->node_list[i];
-	}
-	pkg.ttl = p->ttl;
-	pkg.dest_adr = p->dest_adr;
+
 	for(int i = 0; i < MAX_DEVICES; i++) {
-		if ( ipv6_addr_equal(&routing_tbl[i].ip_addr, &pkg.dest_adr) ) {
+		if ( ipv6_addr_equal(&routing_tbl[i].ip_addr, &p->dest_adr) ) {
 #ifdef HAF_DEBUG_ROUTING
 			printf("monitor found, package sent\n");
 #endif
-			udp_send(&pkg, sizeof(pkg), &routing_tbl[i].next_hop_adr);
+			udp_send(p, sizeof(*p), &routing_tbl[i].next_hop_adr);
 			sent = 1;
 		}
 		else {

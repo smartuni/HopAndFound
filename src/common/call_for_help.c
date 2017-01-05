@@ -75,7 +75,6 @@ void send_call_for_help(void) {
  *	@param p Call For Help message
  */
 void forward_call_for_help(call_for_help_t* p) {
-	call_for_help_t pkg;
 	if (p->seq_nr > seq_nr_recv){
 #ifdef HAF_DEBUG
 		printf("CALL FOR HELP forward.\n");
@@ -85,19 +84,11 @@ void forward_call_for_help(call_for_help_t* p) {
 		printf("ttl: %u\n", p->ttl);
 		printf("dest_adr: "); print_ipv6_string(&p->dest_adr); printf("\n");
 #endif
-		pkg.type = p->type;
-		pkg.seq_nr = p->seq_nr;
-		pkg.mi_id = p->mi_id;
-		for(int i = 0; i < MAX_NODES; i++) {
-			pkg.node_list[i] = p->node_list[i];
-		}
-		pkg.ttl = p->ttl;
-		pkg.dest_adr = p->dest_adr;
 
 #ifdef TEST_PRESENTATION
 		p->node_list_path[NODE_ID] = 1;
 #endif /* TEST_PRESENTATION */
-		sendpkg(&pkg);
+		sendpkg(p);
 		seq_nr_recv = p->seq_nr;
 	}
 }
