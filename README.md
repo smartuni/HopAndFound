@@ -43,7 +43,7 @@ The display of the monitor is the Nokia pcd8544.
 
 #### general ####
 
-In "src/include/globals.h":
+In "src/include/global.h":
 
 * Netif channel can be changed.
 * Signal strength can be adjusted.
