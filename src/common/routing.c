@@ -27,9 +27,6 @@ void _update(void){
 	update_t pkg;
 #ifdef HAF_DEBUG
 	printf("update funktion gestartet\n");
-
-	//printf("systemzeit: %" PRIu32 "\n", xtimer_now() );
-	//printf("exp time: %" PRIu32 "\n", ( xtimer_now() + EXP_TIMEOUT ) );
 #endif
 
 	check_exp();
@@ -118,12 +115,9 @@ void handle_update(update_t* p, ipv6_addr_t source_adr){
 	for (int i=0;i<MAX_DEVICES;i++) { //empfangene routing table durcharbeiten
 		found = 0;
 		if ( !ipv6_addr_is_unspecified(&p->routing_tbl[i].ip_addr) ) {
-		//printf("bearbeite empfangene routing table - eintrag: %d:\n", i);
 		for (int j=0;j<MAX_DEVICES;j++) { //eintrag in lokaler routing table suchen
-			//printf("bearbeite in lokaler routing table - eintrag %d, zum vergleich mit empf. rt eintr: %d:\n", j, i);
 			if ( ipv6_addr_equal (&p->routing_tbl[i].ip_addr, &routing_tbl[j].ip_addr) && found == 0 )  { //eintrag in lokaler routing table gefunden
 				found = 1;
-				//printf("eintrag %d von empf. rt in lok. rt eintr. %d gefunden\n", i, j);
 				if ( p->routing_tbl[i].hops == 0 ) { //eintrag direkter nachbar?
 
 #ifdef HAF_DEBUG
@@ -133,7 +127,6 @@ void handle_update(update_t* p, ipv6_addr_t source_adr){
 					routing_tbl[j].next_hop_adr = routing_tbl[j].ip_addr;
 					routing_tbl[j].exp_time = xtimer_now().ticks32 + EXP_TIMEOUT;
 				} else { //eintrag kein direkter nachbar
-					//printf("empf. rt element %d ist kein direkter nachbar\n", i);
 					if ( p->routing_tbl[i].hops < routing_tbl[j].hops ) { //prüfe ob route kürzer ist
 #ifdef HAF_DEBUG
 						printf("empf. rt element %d ist KEIN direkter nachbar, expiration time wird erneuert in lok. rt element %d\n", i, j);
@@ -152,11 +145,8 @@ void handle_update(update_t* p, ipv6_addr_t source_adr){
 			}
 		}
 		if ( found == 0 ) { //eintrag in lokaler routing table nicht gefunden
-			//printf("es wurde kein eintrag in lokaler rt zum eintrag %d der empf. rt gefunden\n", i);
 			for (int j=0;j<MAX_DEVICES;j++) { //suche nach freiem eintrag in lokaler routing table
-				//printf("pruefe, ob eintrag %d in lok. rt frei ist\n", j);
 				if ( ipv6_addr_is_unspecified(&routing_tbl[j].ip_addr) && found == 0) { //freier eintrag in lokaler routing table gefunden
-				//if ( routing_tbl[j].ip_addr == 0 && found == 0) { //freier eintrag in lokaler routing table gefunden
 #ifdef HAF_DEBUG
 					printf("CHANGE empf. rt element %d eintragen in lok. rt element %d\n", i, j);
 #endif
@@ -174,11 +164,8 @@ void handle_update(update_t* p, ipv6_addr_t source_adr){
 	for (int j=0;j<MAX_DEVICES;j++) {
 		if ( ipv6_addr_equal(&source_adr, &routing_tbl[j].next_hop_adr) ) { //prüfung auf weggefallene route beim sender
 			remove = 1;
-			//printf("pruefe ob die lok. route %d in der empf. rt noch vorhanden\n",j);
 			for (int k=0;k<MAX_DEVICES;k++) { //empfangene routing table durcharbeiten
-			//printf("eintrag %d in empf. rt durcharbeiten\n", k);
 				if ( ipv6_addr_equal(&routing_tbl[j].ip_addr, &p->routing_tbl[k].ip_addr) && remove == 1 ) { //passende route gefunden
-				//printf("empf. rt element %d route gefunden, nichts unternehmen in lok. rt element %d\n", k, j);
 					remove = 0; //es muss nichts gelöscht werden
 				}
 			}
@@ -195,7 +182,6 @@ void handle_update(update_t* p, ipv6_addr_t source_adr){
 			}
 		}
 	}
-	//printf("empfangene routing table fertig durchgearbeitet\n");
 	if ( change == 1 ) {
 		change = 0;
 #ifdef HAF_DEBUG
@@ -253,7 +239,6 @@ bool checkroute(call_for_help_t* p) {
  */
 void sendpkg(call_for_help_t* p) {
 	int failure,sent = 0;
-	//printf("TESTAUSGABE dest_adr: "); print_ipv6_string(&p->dest_adr); printf("\n");
 	call_for_help_t pkg;
 	pkg.type = p->type;
 	pkg.seq_nr = p->seq_nr;

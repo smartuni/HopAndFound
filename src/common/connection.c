@@ -77,7 +77,6 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 #endif
 
     if (dst != NULL){
-		//memcpy(&d, dst, sizeof(*dst));
 		d = *dst;
 	}else{
 		if (ipv6_addr_from_str(&d, UDP_MULTICAST_ADDRESS) == NULL) {
@@ -118,7 +117,6 @@ int udp_server_start(dispatcher_callback_t cb) {
 
 	if(conn_udp_create(&conn, &server_addr, sizeof(server_addr), AF_INET6, port) < 0) {
 		printf("[CONN] Cannot create connection on port %d\n", port);
-		// TODO error handling
 	}
 
 	uint32_t last_src_rcv_time = 0;
@@ -133,11 +131,8 @@ int udp_server_start(dispatcher_callback_t cb) {
 		if((res = conn_udp_recvfrom(&conn, &recv_buffer, sizeof(recv_buffer),
 									&src, &src_len, &port)) < 0) {
 			printf("[CONN] Error while receiving, error code = %d\n", res);
-
-			// TODO error handling
         } else if(res == 0) {
             puts("[CONN] No data received\n");
-            // TODO error handling
         } else {
 			ipv6_addr_to_str(src_str, &src, IPV6_ADDR_MAX_STR_LEN);
 
@@ -166,7 +161,6 @@ int udp_send(void* p, size_t p_size, ipv6_addr_t* dst){
 #endif
 
     if (dst != NULL){
-		//memcpy(&d, dst, sizeof(*dst));
 		d = *dst;
 	}else{
 		if (ipv6_addr_from_str(&d, UDP_MULTICAST_ADDRESS) == NULL) {

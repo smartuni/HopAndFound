@@ -236,8 +236,7 @@ void printDisplayMapStringPath(uint8_t* nodes,uint8_t* node_list_path){
    pcd8544_write_s(&dev,MAP_X_OFFSET/2,MAP_Y_OFFSET+1,row2);
    pcd8544_write_s(&dev,MAP_X_OFFSET/2,MAP_Y_OFFSET+2,row2);
    pcd8544_write_s(&dev,MAP_X_OFFSET/2,MAP_Y_OFFSET+3,row4);
-   
-  // printMonitoredItemLost();
+
 }
 
 

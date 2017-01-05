@@ -11,7 +11,7 @@
 #include "bind.h"
 #include "haf_queue.h"
 
-#define DEBOUNCE_TIME_USEC	250000
+#define DEBOUNCE_TIME_USEC	(250000)
 
 haf_button_cb_t button_cb;
 xtimer_t _timer_debounce;

@@ -20,7 +20,6 @@ xtimer_t _timer_localization_request;
 /*
  * 	SENDING LOCALIZATION REQUEST
  */
-
 void send_localization_request(void) {
 	localization_request_t ret_pkg;
 
@@ -54,7 +53,6 @@ void localization_request_init(localization_request_cb_t cb) {
 /*
  * 	RECIEVING LOCALIZATION REQUEST
  */
-
 void handle_localization_request(ipv6_addr_t* dst, ipv6_addr_t* monitor){
 
 	send_localization_reply(dst, monitor);
@@ -64,7 +62,6 @@ void handle_localization_request(ipv6_addr_t* dst, ipv6_addr_t* monitor){
 /*
  * 	CALLBACK METHODS
  */
-
 void localization_request_cb_monitored_item(void) {
 #ifdef HAF_DEBUG_NODE_MAP
 	printConsoleMap(get_node_list(), MAX_NODES);

@@ -62,17 +62,12 @@ void resetNodeList(void) {
 void clear_route_list(void) {
 	route_list.hops = 0;
 	 ipv6_addr_set_unspecified(&route_list.node_adr);
-	//UDP_MULTICAST_ADDRESS;
 }
 
 void get_route_p(ipv6_addr_t* ipv6_adr) {
-	//printf("CALL FOR HELP IP "); print_ipv6_string(&route_list.node_adr); printf("\n");
-	//ipv6_adr = route_list.node_adr;
 	memcpy(ipv6_adr, &route_list.node_adr, sizeof(ipv6_addr_t));
 }
 
 void get_hops_p(uint8_t* hops) {
-
-	//hops = route_list.hops;
 	memcpy(hops, &route_list.hops, sizeof(uint8_t));
 }
