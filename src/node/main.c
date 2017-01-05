@@ -11,26 +11,23 @@
 #include "connection.h"
 #include "haf_thread.h"
 
-int main(void){
+int main(void) {
+	xtimer_init();
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
 	set_netif(POWER,SIGNAL_STRENGTH_NODE);
 	set_netif(CHANNEL, NETIF_CHANNEL);
 
 #ifdef HAF_DEBUG
 	printf("Node start! ID: %d\n", NODE_ID);
-
 #ifdef HAF_USE_SOCK_UDP
 	puts("Using sock_udp");
 #else
 	puts("Using conn_udp");
 #endif
-#endif
-
-	xtimer_init();
+#endif /* HAF_DEBUG */
 
 	init();
 	haf_thread_create();
-
 
 #ifdef TEST_PRESENTATION
 	init_LED();

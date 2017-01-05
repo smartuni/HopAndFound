@@ -14,25 +14,23 @@
 #include "connection.h"
 #include "haf_thread.h"
 
-
-int main(void){
+int main(void) {
+	xtimer_init();
 	xtimer_sleep(STARTUP_SLEEPTIME_SEC);
 	set_netif(POWER, SIGNAL_STRENGTH_MONITOR);
 	set_netif(CHANNEL, NETIF_CHANNEL);
 
-	xtimer_init();
 	haf_thread_create();
 	displayInit();
 
 #ifdef HAF_DEBUG
 	puts("Monitor start!");
-
 #ifdef HAF_USE_SOCK_UDP
 	puts("Using sock_udp");
 #else
 	puts("Using conn_udp");
 #endif
-#endif
+#endif /* HAF_DEBUG */
 
 #ifdef TEST_PRESENTATION
 	init_LED();
