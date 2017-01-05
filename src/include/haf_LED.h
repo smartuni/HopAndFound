@@ -8,6 +8,7 @@
  * LED1	=	GREEN
  * LED2	=	BLUE
  */
+ 
 typedef enum {
 	LED_RED,
 	LED_GREEN,

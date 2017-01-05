@@ -24,8 +24,8 @@ xtimer_t _timer_call_for_help;
 void _call_for_help_handler_task(void) {
 	printDisplayHopAndFoundActive();
 	puts("call_for_help_timeout");
-
 }
+
 /*  function call_for_help_handler_init
  *
  *	Initializes the timer for sending the Call For Help message
@@ -37,6 +37,7 @@ void call_for_help_handler_init(void) {
     _timer_call_for_help.long_target = 0;
     _timer_call_for_help.callback = (void*)_call_for_help_handler_task;
 }
+
 /*  function send_call_for_help
  *
  *	Sends the Call For Help from the monitor through the node
@@ -63,13 +64,7 @@ void send_call_for_help(void) {
 	udp_send(&pkg, sizeof(pkg), &routed_dst);
 	printf("CALL FOR HELP SENT TO "); print_ipv6_string(&routed_dst); printf("\n");
 	printf("CALL FOR HELP DEST IP: "); print_ipv6_string(&pkg.dest_adr); printf("\n");
-	//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr); uralt
-	//udp_send(&pkg, sizeof(pkg), NULL);	alt
 	clear_route_list();
-/*#ifdef HAF_DEBUG_NODE_MAP
-	printConsoleMap(get_node_list(), MAX_NODES);
-#endif*/
-
 	resetNodeList();
 }
 
@@ -89,7 +84,6 @@ void forward_call_for_help(call_for_help_t* p) {
 		printf("mi_id: %u\n", p->mi_id);
 		printf("ttl: %u\n", p->ttl);
 		printf("dest_adr: "); print_ipv6_string(&p->dest_adr); printf("\n");
-		//printf("dest_adr: %u\n", p->dest_adr);
 #endif
 		pkg.type = p->type;
 		pkg.seq_nr = p->seq_nr;
@@ -104,8 +98,6 @@ void forward_call_for_help(call_for_help_t* p) {
 		p->node_list_path[NODE_ID] = 1;
 #endif /* TEST_PRESENTATION */
 		sendpkg(&pkg);
-		//udp_send(&pkg, sizeof(pkg), &pkg.dest_adr);
-		//udp_send(&pkg, sizeof(pkg), NULL);
 		seq_nr_recv = p->seq_nr;
 	}
 }
@@ -121,7 +113,6 @@ void handle_call_for_help(call_for_help_t* p, handler_t h) {
 		forward_call_for_help(p);
 	} else if ( h == MONITOR ) {
 		if ( p->mi_id == MONITORED_ITEM_ID ) {
-			//printDisplayMapString(p->node_list);
 			printDisplayMapStringPath(p->node_list,p->node_list_path);
 		    xtimer_set(&_timer_call_for_help, CALL_FOR_HELP_TIME_USEC);
 #ifdef HAF_DEBUG_DONT_PRINT_EMPTY_MAP

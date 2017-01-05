@@ -14,6 +14,10 @@ void setHeartbeatActive(bool status);
  * Initializes the heartbeat handler for incoming heartbeats.
  */
 void heartbeat_timeout_init(void);
+
+/* 
+ * Starts the heartbeat timeout.
+ */
 void heartbeat_timeout_start(void);
 /* 
  * Handles incoming heartbeat.

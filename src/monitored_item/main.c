@@ -44,7 +44,6 @@ int main(void){
 #endif
 	heartbeat_timeout_init();
 
-	//heartbeat_timeout_init(); // Move to bind.c  handle_bind(); 
 	udp_server_start((dispatcher_callback_t) dispatch_monitored_item);
 
 	return 0;
