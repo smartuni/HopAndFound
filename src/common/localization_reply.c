@@ -41,7 +41,7 @@ void handle_localization_reply(localization_reply_t* p){
 #ifdef HAF_DEBUG
 			printf("LOC REPLY ADRESSE HINZUGEFUEGT: "); print_ipv6_string(&p->node_adr); printf("\n");
 #endif
-			route_list.node_adr = p->node_adr;
+			memcpy(&route_list.node_adr, &p->node_adr, sizeof(ipv6_addr_t)); //route_list.node_adr = p->node_adr;
 		}
 	}
 
