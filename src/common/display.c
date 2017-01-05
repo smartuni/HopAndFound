@@ -178,7 +178,13 @@ void printDisplayMapString(uint8_t* nodes){
 
 void printDisplayMapStringPath(uint8_t* nodes,uint8_t* node_list_path){
    pcd8544_clear(&dev);
+#ifdef HAF_DEBUG
 
+	puts("Path:");
+   	for(int i = 0; i < MAX_NODES; i++) {
+		printf("node_list[%d]: %u\n", i,node_list_path[i]);
+	}
+#endif
    char row1[10]="X   X   X";
    char row2[10]="         "; //row 3 always the same as row2
    char row4[10]="X   X   X";
